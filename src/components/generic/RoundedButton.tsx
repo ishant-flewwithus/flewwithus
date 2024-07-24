@@ -9,7 +9,7 @@ interface RoundedButtonProps {
   icon: string | StaticImport;
   title: string;
   navigateUrl: string;
-  transparentMode: boolean;
+  transparentMode?: boolean;
 }
 
 export default function RoundedButton({
