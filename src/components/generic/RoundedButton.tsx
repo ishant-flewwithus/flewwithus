@@ -10,7 +10,7 @@ interface RoundedButtonProps {
   title: string;
   navigateUrl: string;
   transparentMode?: boolean;
-  hideLabelOnSmallScreen: boolean;
+  hideLabelOnSmallScreen?: boolean;
 }
 
 export default function RoundedButton({
