@@ -27,11 +27,7 @@ const navLinks = [
   },
 ];
 
-export default function FlightHome({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function FlightHome() {
   const pathname = usePathname();
   return (
     <Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
