@@ -1,7 +1,31 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import NavButton from "@/components/NavButton";
+import FlightIcon from "@/assets/plane.svg";
+import CabIcon from "@/assets/cabs.svg";
+import HotelIcon from "@/assets/hotels.svg";
+import RoundedButton from "@/components/RoundedButton";
+import Container from "@/components/Container";
+import Section from "@/components/Section";
+import RoundedButtonBase from "@/components/RoundedButtonBase";
+
+const navLinks = [
+  {
+    title: "Flights",
+    navigateUrl: "/flights",
+    icon: FlightIcon,
+  },
+  {
+    title: "Hotels",
+    navigateUrl: "/hotels",
+    icon: HotelIcon,
+  },
+  {
+    title: "Cabs",
+    navigateUrl: "/cabs",
+    icon: CabIcon,
+  },
+];
 
 export default function FlightHome({
   children,
@@ -10,53 +34,41 @@ export default function FlightHome({
 }>) {
   const pathname = usePathname();
   return (
-    <div className="min-h-screen relative">
-      <div className="absolute top-0 left-0 right-0 w-full z-[-1]">
-        <img src="/flight_home_image.png" className="w-full h-screen" />
-      </div>
+    <Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
       <div className="flex items-center justify-between p-4">
-        <img src="logo_white_icon_text.svg" className="w-40 h-auto" />
-        <div className="flex items-center justify-between gap-4">
-          <NavButton
-            title="Flights"
-            isSelected={pathname === "/flights"}
-            iconPath={
-              <path d="M10.25 19.5L7.675 20.225C7.44167 20.2917 7.229 20.2543 7.037 20.113C6.845 19.9717 6.74933 19.784 6.75 19.55C6.75 19.35 6.775 19.1873 6.825 19.062C6.875 18.9367 6.94167 18.841 7.025 18.775L8.75 17.5V12L1.475 14.15C1.15833 14.2333 0.875 14.1833 0.625 14C0.375 13.8167 0.25 13.5583 0.25 13.225C0.25 12.975 0.291667 12.7667 0.375 12.6C0.458333 12.4333 0.575 12.3083 0.725 12.225L8.75 7.5V2C8.75 1.58334 8.896 1.22934 9.188 0.938002C9.48 0.646669 9.834 0.500669 10.25 0.500002C10.666 0.499336 11.0203 0.645336 11.313 0.938002C11.6057 1.23067 11.7513 1.58467 11.75 2V7.5L19.775 12.225C19.925 12.3083 20.0417 12.4333 20.125 12.6C20.2083 12.7667 20.25 12.975 20.25 13.225C20.25 13.5583 20.125 13.8167 19.875 14C19.625 14.1833 19.3417 14.2333 19.025 14.15L11.75 12V17.5L13.475 18.775C13.5583 18.8417 13.625 18.9377 13.675 19.063C13.725 19.1883 13.75 19.3507 13.75 19.55C13.75 19.7833 13.654 19.971 13.462 20.113C13.27 20.255 13.0577 20.2923 12.825 20.225L10.25 19.5Z" />
-            }
-            navigateUrl="/flights"
-          />
-
-          <NavButton
-            title="Hotels"
-            isSelected={pathname === "/hotels"}
-            iconPath={
-              <path d="M0.166992 15.7501V0.041748H1.37533V10.9167H11.6462V2.45841H20.7087C21.7059 2.45841 22.5594 2.81326 23.2691 3.52296C23.9788 4.23265 24.3337 5.08614 24.3337 6.08341V15.7501H23.1253V12.1251H1.37533V15.7501H0.166992ZM6.20624 8.64025C5.49494 8.64025 4.89158 8.39133 4.39616 7.8935C3.90074 7.39566 3.65303 6.7915 3.65303 6.081C3.65303 5.3705 3.90155 4.76714 4.39857 4.27091C4.8956 3.77469 5.49977 3.52698 6.21107 3.52779C6.92238 3.5286 7.52574 3.77711 8.02116 4.27333C8.51657 4.76955 8.76469 5.37372 8.76549 6.08583C8.7663 6.79794 8.51738 7.4013 8.01874 7.89591C7.5201 8.39052 6.91594 8.63864 6.20624 8.64025Z" />
-            }
-            navigateUrl="/hotels"
-          />
-
-          <NavButton
-            title="Cabs"
-            isSelected={pathname === "/cabs"}
-            iconPath={
-              <path d="M22.1069 7.50512C22.094 7.4452 22.075 7.38675 22.0502 7.33066L19.9104 2.33723C19.417 1.18346 18.2168 0.4375 16.8512 0.4375H5.64882C4.28434 0.4375 3.083 1.18346 2.59022 2.33723L0.448075 7.33066C0.399359 7.44329 0.374482 7.56479 0.375008 7.6875V17.6562C0.375008 17.8966 0.470488 18.1271 0.640443 18.2971C0.810398 18.467 1.04091 18.5625 1.28126 18.5625H3.09376C3.33411 18.5625 3.56462 18.467 3.73457 18.2971C3.90453 18.1271 4.00001 17.8966 4.00001 17.6562V16.75H18.5V17.6562C18.5 17.8966 18.5955 18.1271 18.7654 18.2971C18.9354 18.467 19.1659 18.5625 19.4063 18.5625H21.2188C21.4591 18.5625 21.6896 18.467 21.8596 18.2971C22.0295 18.1271 22.125 17.8966 22.125 17.6562V7.6875C22.1251 7.62625 22.1191 7.56514 22.1069 7.50512ZM4.90626 13.125C4.54778 13.125 4.19735 13.0187 3.89929 12.8195C3.60122 12.6204 3.36891 12.3373 3.23173 12.0061C3.09454 11.6749 3.05865 11.3105 3.12858 10.9589C3.19852 10.6073 3.37114 10.2844 3.62463 10.0309C3.87811 9.77739 4.20107 9.60476 4.55266 9.53483C4.90425 9.46489 5.26868 9.50078 5.59987 9.63797C5.93106 9.77515 6.21414 10.0075 6.4133 10.3055C6.61246 10.6036 6.71876 10.954 6.71876 11.3125C6.71876 11.7932 6.5278 12.2542 6.18789 12.5941C5.84798 12.934 5.38696 13.125 4.90626 13.125ZM17.5938 13.125C17.2353 13.125 16.8848 13.0187 16.5868 12.8195C16.2887 12.6204 16.0564 12.3373 15.9192 12.0061C15.782 11.6749 15.7461 11.3105 15.8161 10.9589C15.886 10.6073 16.0586 10.2844 16.3121 10.0309C16.5656 9.77739 16.8886 9.60476 17.2402 9.53483C17.5917 9.46489 17.9562 9.50078 18.2874 9.63797C18.6186 9.77515 18.9016 10.0075 19.1008 10.3055C19.3 10.6036 19.4063 10.954 19.4063 11.3125C19.4063 11.7932 19.2153 12.2542 18.8754 12.5941C18.5355 12.934 18.0745 13.125 17.5938 13.125ZM2.65536 6.78125L4.25432 3.05146C4.45936 2.57228 5.01954 2.25 5.64882 2.25H16.8512C17.4799 2.25 18.0407 2.57228 18.2457 3.05146L19.8447 6.78125H2.65536Z" />
-            }
-            navigateUrl="/cabs"
+        <div className="relative h-[55px] w-[186px]">
+          <Image
+            src="logo_white_icon_text.svg"
+            alt="Flew With Us Logo"
+            layout="fill"
           />
         </div>
+
+        <div className="flex items-center justify-between gap-4">
+          {navLinks?.map((item, index) => (
+            <RoundedButton
+              key={index}
+              title={item.title}
+              isSelected={pathname === item.navigateUrl}
+              icon={item.icon}
+              navigateUrl={item.navigateUrl}
+            />
+          ))}
+        </div>
         <div>
-          <div className="flex items-center justify-between gap-2 text-primary-500 border-onprimary border px-4 py-2 rounded-full font-normal cursor-pointer bg-onprimary hover:bg-onprimary/80">
+          <RoundedButtonBase>
             <Image
               src="/emojione-v1_flag-for-india.png"
               width={20}
               height={20}
+              alt="India"
             />
             <span className="text-sm">IND | ENG | INR</span>
             <span className="text-textbody">|</span>
             <span className="text-sm font-bold">LOGIN</span>
-          </div>
+          </RoundedButtonBase>
         </div>
       </div>
-    </div>
+    </Section>
   );
 }
