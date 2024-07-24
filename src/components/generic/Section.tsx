@@ -6,7 +6,7 @@ import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Container from "./Container";
 
 interface SectionProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   fullHeight?: boolean;
   backgroundImageUrl?: string;
 }
@@ -20,7 +20,13 @@ export default function Section({
     <div className={`relative ${fullHeight ? "h-screen" : "h-auto"}`}>
       <div className="absolute left-0 right-0 top-0 z-[-1] w-full">
         {backgroundImageUrl && (
-          <img src={backgroundImageUrl} className="h-screen w-full" />
+          <div className="h-screen w-full">
+            <Image
+              src={backgroundImageUrl}
+              fill={true}
+              alt="background image"
+            />
+          </div>
         )}
       </div>
       <Container>{children}</Container>

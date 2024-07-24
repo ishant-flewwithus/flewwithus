@@ -1,21 +1,20 @@
 "use client";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
+import Section from "@/components/generic/Section";
+import NavBar from "@/components/app/NavBar";
+import Box from "@/components/generic/Box";
+import Stack from "@/components/generic/Stack";
+import {
+  DEFAULT_CONTENT_GAP,
+  DEFAULT_SECTION_GAP,
+} from "@/other/style.constant";
 import FlightIcon from "@/assets/plane.svg";
 import CabIcon from "@/assets/cabs.svg";
 import HotelIcon from "@/assets/hotels.svg";
-import RoundedButton from "@/components/RoundedButton";
-import Container from "@/components/Container";
-import Section from "@/components/Section";
-import RoundedButtonBase from "@/components/RoundedButtonBase";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { MdOutlineInfo } from "react-icons/md";
-import { IoIosHelpCircleOutline } from "react-icons/io";
-import { MdOutlinePrivacyTip } from "react-icons/md";
-import { MdChecklist } from "react-icons/md";
-import { TbArticle } from "react-icons/tb";
-import { MdOutlineSettings } from "react-icons/md";
+import RoundedButton from "@/components/generic/RoundedButton";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+import SwitchButton from "@/assets/switch_button.svg";
+import Image from "next/image";
 
 const navLinks = [
   {
@@ -35,109 +34,110 @@ const navLinks = [
   },
 ];
 
-const navLinksMobile = [
-  {
-    title: "About us",
-    navigateUrl: "/",
-    icon: <GiHamburgerMenu />,
-  },
-  {
-    title: "Help",
-    navigateUrl: "/",
-    icon: <IoIosHelpCircleOutline />,
-  },
-  {
-    title: "Privacy policy",
-    navigateUrl: "/",
-    icon: <MdOutlinePrivacyTip />,
-  },
-  {
-    title: "Terms of service",
-    navigateUrl: "/",
-    icon: <MdChecklist />,
-  },
-  {
-    title: "Blog",
-    navigateUrl: "/",
-    icon: <TbArticle />,
-  },
-  {
-    title: "Privacy Settings",
-    navigateUrl: "/",
-    icon: <MdOutlineSettings />,
-  },
-];
+const flightTypes = ["One way", "Round trip"];
 
 export default function FlightHome() {
-  const [showMobileNavMenu, setShowMobileNavMenu] = useState(false);
-
   const pathname = usePathname();
+
+  const [flightType, setFlightType] = useState("oneway");
+
   return (
     <Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
-      {/* NAV BAR */}
-      <div className="flex items-center justify-between p-4">
-        {/* LOGO */}
-        <div className="relative h-[45px] w-[150px] lg:h-[55px] lg:w-[186px]">
-          <Image
-            src="logo_white_icon_text.svg"
-            alt="Flew With Us Logo"
-            layout="fill"
-          />
-        </div>
-
-        {/* LINKS */}
-        <div className="hidden items-center justify-between gap-4 lg:flex">
-          {navLinks?.map((item, index) => (
-            <RoundedButton
-              key={index}
-              title={item.title}
-              isSelected={pathname === item.navigateUrl}
-              icon={item.icon}
-              navigateUrl={item.navigateUrl}
-            />
-          ))}
-        </div>
-
-        {/* SETTINGS BUTTON */}
-        <div className="flex items-center gap-5">
-          <div className="hidden sm:flex">
-            <RoundedButtonBase>
-              <Image
-                src="/emojione-v1_flag-for-india.png"
-                width={20}
-                height={20}
-                alt="India"
-              />
-              <span className="text-xs lg:text-sm">IND | ENG | INR</span>
-              <span className="text-xs text-textbody lg:text-sm">|</span>
-              <span className="text-xs font-bold lg:text-sm">LOGIN</span>
-            </RoundedButtonBase>
-          </div>
-
-          <div className="relative lg:hidden">
-            <div
-              onClick={() => setShowMobileNavMenu(true)}
-              className="cursor-pointer text-2xl text-onprimary hover:text-onprimary/90"
-            >
-              <GiHamburgerMenu />
+      <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
+        <NavBar />
+        <Box>
+          <Stack direction="vertical" gap={DEFAULT_CONTENT_GAP}>
+            <div className="flex items-start gap-4">
+              {navLinks?.map((item, index) => (
+                <RoundedButton
+                  key={index}
+                  title={item.title}
+                  isSelected={pathname === item.navigateUrl}
+                  icon={item.icon}
+                  navigateUrl={item.navigateUrl}
+                  transparentMode={false}
+                />
+              ))}
             </div>
-            {showMobileNavMenu && (
-              <div className="absolute right-0 w-[60vw] rounded-b-xl rounded-l-xl bg-primary-500 p-4 shadow-xl sm:w-[45vw] md:w-[30vw]">
-                {navLinksMobile.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex cursor-pointer items-center gap-3 px-1 py-2 text-onprimary"
-                    onClick={() => setShowMobileNavMenu(false)}
+            <div className="text-2xl font-bold">
+              Millions of cheap flights. One simple search.
+            </div>
+
+            {/* FLIGHT TYPE RADIO BUTTONS */}
+            <div className="flex items-center gap-4">
+              {flightTypes.map((type, index) => (
+                <div className="flex items-center" key={index}>
+                  <input
+                    id={type + index}
+                    type="radio"
+                    value={type}
+                    name="default-radio"
+                    className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600"
+                  />
+                  <label
+                    htmlFor={type + index}
+                    className="ms-2 text-sm font-medium"
                   >
-                    <div>{item.icon}</div>
-                    {item.title}
-                  </div>
-                ))}
+                    {type}
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-[20%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                <div className="text-sm font-medium">From</div>
+                <div className="mt-2 line-clamp-1 text-lg font-bold">Delhi</div>
+                <div className="text-xs font-light text-textbody">
+                  DEL, Delhi Airport India
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-      </div>
+              <Image
+                src={SwitchButton}
+                width={30}
+                height={30}
+                alt="Switch flights"
+                className="cursor-pointer"
+              />
+              <div className="w-[20%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                <div className="text-sm font-medium">To</div>
+                <div className="mt-2 line-clamp-1 text-lg font-bold">
+                  Bangalore, KA
+                </div>
+                <div className="text-xs font-light text-textbody">
+                  Indira Gandhi International...
+                </div>
+              </div>
+              <div className="w-[20%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                <div className="text-sm font-medium">Depart</div>
+                <div className="mt-2 line-clamp-1 text-lg font-bold">05</div>
+                <div className="text-xs font-light text-textbody">
+                  Jul&apos;24 Friday
+                </div>
+              </div>
+              <div className="w-[15%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                <div className="text-sm font-medium">Return</div>
+                <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
+                <div className="text-xs font-light text-textbody">
+                  Tap to add a return date for bigger discounts
+                </div>
+              </div>
+              <div className="w-[15%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                <div className="text-sm font-medium">
+                  Travelers & Cabin Class
+                </div>
+                <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
+                <div className="text-xs font-light text-textbody">
+                  1 Adult, Economy
+                </div>
+              </div>
+              <div className="w-[10%] lg:w-[6%] cursor-pointer self-stretch rounded-xl border border-primary-500 bg-primary-500 p-4 text-onprimary flex items-center justify-center hover:bg-primary-600">
+                Search
+              </div>
+            </div>
+          </Stack>
+        </Box>
+      </Stack>
     </Section>
   );
 }
