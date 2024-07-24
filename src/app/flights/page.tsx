@@ -84,9 +84,11 @@ export default function FlightHome() {
     <Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
       <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
         <NavBar />
+
         <Box>
           <Stack direction="vertical" gap={DEFAULT_CONTENT_GAP}>
-            <div className="flex items-start gap-4">
+            {/* FLIGHTS, HOTELS, CABS BUTTONS */}
+            <div className="flex items-center justify-center gap-4 lg:justify-start">
               {navLinks?.map((item, index) => (
                 <RoundedButton
                   key={index}
@@ -95,11 +97,19 @@ export default function FlightHome() {
                   icon={item.icon}
                   navigateUrl={item.navigateUrl}
                   transparentMode={false}
+                  hideLabelOnSmallScreen={true}
                 />
               ))}
             </div>
-            <div className="text-2xl font-bold">
+
+            {/* DESKTOP HEADING */}
+            <div className="hidden text-2xl font-bold lg:block">
               Millions of cheap flights. One simple search.
+            </div>
+
+            {/* MOBILE HEADING */}
+            <div className="mx-auto block w-full rounded-full bg-green-600 p-1 text-center font-medium text-white md:w-1/2 lg:hidden">
+              NO CONVINIENCE FEE, NO PRICE HIKE
             </div>
 
             {/* FLIGHT TYPE RADIO BUTTONS */}
@@ -124,45 +134,59 @@ export default function FlightHome() {
             </div>
 
             {/* FLIGHT CHOOSER */}
-            <div className="flex items-center gap-4">
-              <div className="w-[20%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-                <div className="text-sm font-medium">From</div>
-                <div className="mt-2 line-clamp-1 text-lg font-bold">Delhi</div>
-                <div className="text-xs font-light text-textbody">
-                  DEL, Delhi Airport India
+            <div className="flex flex-wrap items-center gap-4">
+              {/* FROM AND TO */}
+              <div className="flex w-full items-center justify-between self-stretch lg:w-[30%]">
+                <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                  <div className="text-sm font-medium">From</div>
+                  <div className="mt-2 line-clamp-1 text-lg font-bold">
+                    Delhi
+                  </div>
+                  <div className="text-xs font-light text-textbody">
+                    DEL, Delhi Airport India
+                  </div>
+                </div>
+                <div className="m-2 flex h-10 w-10 items-center justify-center">
+                  <Image
+                    src={SwitchButton}
+                    width={30}
+                    height={30}
+                    alt="Switch flights"
+                    className="mx-4 cursor-pointer"
+                  />
+                </div>
+                <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                  <div className="text-sm font-medium">To</div>
+                  <div className="mt-2 line-clamp-1 text-lg font-bold">
+                    Bangalore, KA
+                  </div>
+                  <div className="text-xs font-light text-textbody">
+                    Indira Gandhi International...
+                  </div>
                 </div>
               </div>
-              <Image
-                src={SwitchButton}
-                width={30}
-                height={30}
-                alt="Switch flights"
-                className="cursor-pointer"
-              />
-              <div className="w-[20%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-                <div className="text-sm font-medium">To</div>
-                <div className="mt-2 line-clamp-1 text-lg font-bold">
-                  Bangalore, KA
+
+              {/* DEPART AND RETURN */}
+              <div className="flex w-full items-center justify-between self-stretch lg:w-[30%]">
+                <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                  <div className="text-sm font-medium">Depart</div>
+                  <div className="mt-2 line-clamp-1 text-lg font-bold">05</div>
+                  <div className="text-xs font-light text-textbody">
+                    Jul&apos;24 Friday
+                  </div>
                 </div>
-                <div className="text-xs font-light text-textbody">
-                  Indira Gandhi International...
-                </div>
-              </div>
-              <div className="w-[20%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-                <div className="text-sm font-medium">Depart</div>
-                <div className="mt-2 line-clamp-1 text-lg font-bold">05</div>
-                <div className="text-xs font-light text-textbody">
-                  Jul&apos;24 Friday
+                <div className="m-2 flex h-10 w-10 items-center justify-center"></div>
+                <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                  <div className="text-sm font-medium">Return</div>
+                  <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
+                  <div className="text-xs font-light text-textbody">
+                    Tap to add a return date for bigger discounts
+                  </div>
                 </div>
               </div>
-              <div className="w-[15%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-                <div className="text-sm font-medium">Return</div>
-                <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
-                <div className="text-xs font-light text-textbody">
-                  Tap to add a return date for bigger discounts
-                </div>
-              </div>
-              <div className="w-[15%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+
+              {/* TRAVELLER AND CABIN CLASS */}
+              <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4 lg:w-[15%]">
                 <div className="text-sm font-medium">
                   Travelers & Cabin Class
                 </div>
@@ -171,13 +195,15 @@ export default function FlightHome() {
                   1 Adult, Economy
                 </div>
               </div>
-              <div className="flex w-[10%] cursor-pointer items-center justify-center self-stretch rounded-xl border border-primary-500 bg-primary-500 p-4 text-onprimary hover:bg-primary-600 lg:w-[6%]">
+
+              {/* SEARCH BUTTON */}
+              <div className="flex w-full cursor-pointer items-center justify-center self-stretch rounded-full border border-primary-500 bg-primary-500 p-4 text-onprimary hover:bg-primary-600 lg:w-[10%] lg:rounded-xl">
                 Search
               </div>
             </div>
 
             {/* FLIGHT FARE CHOOSER */}
-            <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-4">
               <div>
                 <div className="font-bold">Select a special fare</div>
                 <div className="text-sm text-textbody">Extra Savings</div>
@@ -186,7 +212,7 @@ export default function FlightHome() {
                 {offerOptions.map((item, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-4 rounded-xl border border-gray-300 p-4 cursor-pointer"
+                    className="flex cursor-pointer items-center gap-4 rounded-xl border border-gray-300 p-4"
                   >
                     <input
                       id={item.value + index}
@@ -203,9 +229,7 @@ export default function FlightHome() {
                     />
                     <div>
                       <div className="text-lg font-bold">{item.title}</div>
-                      <div className="text-xs">
-                        {item.description}
-                      </div>
+                      <div className="text-xs">{item.description}</div>
                     </div>
                   </div>
                 ))}
