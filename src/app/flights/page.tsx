@@ -15,6 +15,10 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import SwitchButton from "@/assets/switch_button.svg";
 import Image from "next/image";
+import StudentIcon from "@/assets/student_15399518 1.svg";
+import SeniorCitizenIcon from "@/assets/grandfather_522280 1.svg";
+import ArmedForcesIcon from "@/assets/user-pilot-tie_9585967 1.svg";
+import DoctorIcon from "@/assets/user-md_9856850 1.svg";
 
 const navLinks = [
   {
@@ -34,7 +38,42 @@ const navLinks = [
   },
 ];
 
-const flightTypes = ["One way", "Round trip"];
+const flightTypes = [
+  {
+    title: "One way",
+    value: "oneway",
+  },
+  {
+    title: "Round trip",
+    value: "roundtrip",
+  },
+];
+const offerOptions = [
+  {
+    title: "Student",
+    description: "Extra discounts/baggage",
+    value: "student",
+    icon: StudentIcon,
+  },
+  {
+    title: "Senior Citizens",
+    description: "up to ₹600 off",
+    value: "seniorcitizen",
+    icon: SeniorCitizenIcon,
+  },
+  {
+    title: "Armed Forces",
+    description: "up to ₹600 off",
+    value: "armedforces",
+    icon: ArmedForcesIcon,
+  },
+  {
+    title: "Doctor & Nurses",
+    description: "up to ₹600 off",
+    value: "medical",
+    icon: DoctorIcon,
+  },
+];
 
 export default function FlightHome() {
   const pathname = usePathname();
@@ -68,22 +107,23 @@ export default function FlightHome() {
               {flightTypes.map((type, index) => (
                 <div className="flex items-center" key={index}>
                   <input
-                    id={type + index}
+                    id={type.value + index}
                     type="radio"
-                    value={type}
+                    value={type.value}
                     name="default-radio"
                     className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600"
                   />
                   <label
-                    htmlFor={type + index}
+                    htmlFor={type.value + index}
                     className="ms-2 text-sm font-medium"
                   >
-                    {type}
+                    {type.title}
                   </label>
                 </div>
               ))}
             </div>
 
+            {/* FLIGHT CHOOSER */}
             <div className="flex items-center gap-4">
               <div className="w-[20%] cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
                 <div className="text-sm font-medium">From</div>
@@ -131,8 +171,44 @@ export default function FlightHome() {
                   1 Adult, Economy
                 </div>
               </div>
-              <div className="w-[10%] lg:w-[6%] cursor-pointer self-stretch rounded-xl border border-primary-500 bg-primary-500 p-4 text-onprimary flex items-center justify-center hover:bg-primary-600">
+              <div className="flex w-[10%] cursor-pointer items-center justify-center self-stretch rounded-xl border border-primary-500 bg-primary-500 p-4 text-onprimary hover:bg-primary-600 lg:w-[6%]">
                 Search
+              </div>
+            </div>
+
+            {/* FLIGHT FARE CHOOSER */}
+            <div className="flex items-center gap-4">
+              <div>
+                <div className="font-bold">Select a special fare</div>
+                <div className="text-sm text-textbody">Extra Savings</div>
+              </div>
+              <div className="flex items-center gap-4">
+                {offerOptions.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-4 rounded-xl border border-gray-300 p-4 cursor-pointer"
+                  >
+                    <input
+                      id={item.value + index}
+                      type="radio"
+                      value={item.value}
+                      name="default-radio"
+                      className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600"
+                    />
+                    <Image
+                      width={24}
+                      height={24}
+                      src={item.icon}
+                      alt={item.title}
+                    />
+                    <div>
+                      <div className="text-lg font-bold">{item.title}</div>
+                      <div className="text-xs">
+                        {item.description}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </Stack>
