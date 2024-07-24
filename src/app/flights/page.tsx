@@ -100,17 +100,20 @@ export default function FlightHome() {
 
         {/* SETTINGS BUTTON */}
         <div className="flex items-center gap-5">
-          <RoundedButtonBase>
-            <Image
-              src="/emojione-v1_flag-for-india.png"
-              width={20}
-              height={20}
-              alt="India"
-            />
-            <span className="text-xs lg:text-sm">IND | ENG | INR</span>
-            <span className="text-xs text-textbody lg:text-sm">|</span>
-            <span className="text-xs font-bold lg:text-sm">LOGIN</span>
-          </RoundedButtonBase>
+          <div className="hidden sm:flex">
+            <RoundedButtonBase>
+              <Image
+                src="/emojione-v1_flag-for-india.png"
+                width={20}
+                height={20}
+                alt="India"
+              />
+              <span className="text-xs lg:text-sm">IND | ENG | INR</span>
+              <span className="text-xs text-textbody lg:text-sm">|</span>
+              <span className="text-xs font-bold lg:text-sm">LOGIN</span>
+            </RoundedButtonBase>
+          </div>
+
           <div className="relative lg:hidden">
             <div
               onClick={() => setShowMobileNavMenu(true)}
@@ -119,7 +122,7 @@ export default function FlightHome() {
               <GiHamburgerMenu />
             </div>
             {showMobileNavMenu && (
-              <div className="absolute right-0 w-[60vw] sm:w-[45vw] md:w-[30vw] rounded-b-xl rounded-l-xl bg-primary-500 p-4 shadow-xl">
+              <div className="absolute right-0 w-[60vw] rounded-b-xl rounded-l-xl bg-primary-500 p-4 shadow-xl sm:w-[45vw] md:w-[30vw]">
                 {navLinksMobile.map((item, index) => (
                   <div
                     key={index}
