@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     "Flew With Us is a platform that allows users to book flights, hotels, and car rentals.",
 };
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -23,4 +25,3 @@ export default function RootLayout({
     </html>
   );
 }
-
