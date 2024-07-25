@@ -82,7 +82,7 @@ export default function FlightHome() {
   const [flightType, setFlightType] = useState("oneway");
 
   return (
-    <Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
+    <><Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
       <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
         <NavBar />
 
@@ -98,8 +98,7 @@ export default function FlightHome() {
                   icon={item.icon}
                   navigateUrl={item.navigateUrl}
                   transparentMode={false}
-                  hideLabelOnSmallScreen={true}
-                />
+                  hideLabelOnSmallScreen={true} />
               ))}
             </div>
 
@@ -122,8 +121,7 @@ export default function FlightHome() {
                     type="radio"
                     value={type.value}
                     name="default-radio"
-                    className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600"
-                  />
+                    className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600" />
                   <label
                     htmlFor={type.value + index}
                     className="ms-2 text-sm font-medium"
@@ -153,8 +151,7 @@ export default function FlightHome() {
                     width={30}
                     height={30}
                     alt="Switch flights"
-                    className="mx-4 cursor-pointer"
-                  />
+                    className="mx-4 cursor-pointer" />
                 </div>
                 <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
                   <div className="text-sm font-medium">To</div>
@@ -220,14 +217,12 @@ export default function FlightHome() {
                       type="radio"
                       value={item.value}
                       name="default-radio"
-                      className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600"
-                    />
+                      className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600" />
                     <Image
                       width={24}
                       height={24}
                       src={item.icon}
-                      alt={item.title}
-                    />
+                      alt={item.title} />
                     <div>
                       <div className="text-lg font-bold">{item.title}</div>
                       <div className="text-xs">{item.description}</div>
@@ -239,7 +234,8 @@ export default function FlightHome() {
           </Stack>
         </Box>
       </Stack>
-      <Footer />
     </Section>
+        <Footer />
+    </>
   );
 }
