@@ -19,6 +19,7 @@ import StudentIcon from "@/assets/student_15399518 1.svg";
 import SeniorCitizenIcon from "@/assets/grandfather_522280 1.svg";
 import ArmedForcesIcon from "@/assets/user-pilot-tie_9585967 1.svg";
 import DoctorIcon from "@/assets/user-md_9856850 1.svg";
+import Footer from "@/components/Footer";
 
 const navLinks = [
   {
@@ -238,6 +239,7 @@ export default function FlightHome() {
           </Stack>
         </Box>
       </Stack>
+      <Footer />
     </Section>
   );
 }
