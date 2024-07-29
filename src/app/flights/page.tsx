@@ -53,7 +53,7 @@ export default function FlightHome() {
   };
 
   return (
-    <Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
+    <><Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
       <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
         <NavBar />
         <FlightSearch />
@@ -76,5 +76,7 @@ export default function FlightHome() {
         </Box>
       </Stack>
     </Section>
+        <Footer />
+    </>
   );
 }
