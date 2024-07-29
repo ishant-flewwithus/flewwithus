@@ -50,7 +50,7 @@ const flightTypes = [
 const offerOptions = [
   {
     title: "Student",
-    description: "Extra discounts/baggage",
+    description: "Extra discounts / baggage",
     value: "student",
     icon: StudentIcon,
   },
@@ -102,7 +102,7 @@ export default function FlightSearch() {
         </div>
 
         {/* MOBILE HEADING */}
-        <div className="mx-auto block w-full rounded-full bg-green-600 p-1 text-center font-medium text-white md:w-1/2 lg:hidden">
+        <div className="mx-auto block w-full rounded-full bg-green-600 p-2 text-center text-xs font-medium text-white sm:text-sm md:w-1/2 md:text-base lg:hidden">
           NO CONVINIENCE FEE, NO PRICE HIKE
         </div>
 
@@ -130,7 +130,7 @@ export default function FlightSearch() {
         {/* FLIGHT CHOOSER */}
         <div className="flex flex-wrap items-center gap-4">
           {/* FROM AND TO */}
-          <div className="flex w-full items-center justify-between self-stretch lg:w-[30%]">
+          <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
             <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
               <div className="text-sm font-medium">From</div>
               <div className="mt-2 line-clamp-1 text-lg font-bold">Delhi</div>
@@ -159,7 +159,7 @@ export default function FlightSearch() {
           </div>
 
           {/* DEPART AND RETURN */}
-          <div className="flex w-full items-center justify-between self-stretch lg:w-[30%]">
+          <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
             <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
               <div className="text-sm font-medium">Depart</div>
               <div className="mt-2 line-clamp-1 text-lg font-bold">05</div>
@@ -167,7 +167,7 @@ export default function FlightSearch() {
                 Jul&apos;24 Friday
               </div>
             </div>
-            <div className="m-2 flex h-10 w-10 items-center justify-center"></div>
+            <div className="m-2 flex h-10 w-14 lg:w-0 items-center justify-center"></div>
             <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
               <div className="text-sm font-medium">Return</div>
               <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
@@ -178,7 +178,7 @@ export default function FlightSearch() {
           </div>
 
           {/* TRAVELLER AND CABIN CLASS */}
-          <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4 lg:w-[15%]">
+          <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4 lg:w-[17%]">
             <div className="text-sm font-medium">Travelers & Cabin Class</div>
             <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
             <div className="text-xs font-light text-textbody">

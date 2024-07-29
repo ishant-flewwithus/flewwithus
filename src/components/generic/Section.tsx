@@ -1,35 +1,19 @@
-import Image from "next/image";
-import PlaneSvg from "@/assets/plane.svg";
-import { ReactNode, SVGProps } from "react";
-import Link from "next/link";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import Container from "./Container";
+import Box from "./Box";
 
 interface SectionProps {
+  title: String;
   children?: React.ReactNode;
-  fullHeight?: boolean;
-  backgroundImageUrl?: string;
+  actions?: React.ReactNode;
 }
 
-export default function Section({
-  children,
-  fullHeight,
-  backgroundImageUrl,
-}: SectionProps) {
+export default function Section({ title, children, actions }: SectionProps) {
   return (
-    <div className={`relative ${fullHeight ? "h-screen" : "h-auto"}`}>
-      <div className="absolute left-0 right-0 top-0 z-[-1] w-full">
-        {backgroundImageUrl && (
-          <div className="h-screen w-full">
-            <Image
-              src={backgroundImageUrl}
-              fill={true}
-              alt="background image"
-            />
-          </div>
-        )}
+    <Box>
+      <div className="flex items-center justify-between">
+        <div className="z-[2] text-2xl md:text-3xl font-medium">{title}</div>
+        <div>{actions}</div>
       </div>
-      <Container>{children}</Container>
-    </div>
+      <div className="mt-4">{children}</div>
+    </Box>
   );
 }

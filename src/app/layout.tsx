@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className + " bg-background"}>
         <main className="text-textheading">{children}</main>
       </body>
     </html>
