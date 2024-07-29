@@ -13,7 +13,7 @@ import Image from "next/image";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Footer from "@/components/Footer";
+import Footer from "@/components/app/Footer";
 import Container from "@/components/generic/Container";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
@@ -157,8 +157,11 @@ export default function FlightHome() {
             <div className="slider-container mt-4">
               <Slider ref={slider} {...settings}>
                 {faqCarouselData.map((item, index) => (
-                  <div key={index} className="overflow-hidden px-2 md:px-8 py-2">
-                    <div className="w-full self-stretch rounded-xl bg-[#F1F9FF] px-2 md:px-8 py-4">
+                  <div
+                    key={index}
+                    className="overflow-hidden px-2 py-2 md:px-8"
+                  >
+                    <div className="w-full self-stretch rounded-xl bg-[#F1F9FF] px-2 py-4 md:px-8">
                       <div className="text-xl font-semibold">
                         Q{index + 1}. {item.title}
                       </div>
@@ -171,6 +174,7 @@ export default function FlightHome() {
           </Section>
         </Stack>
       </Container>
+      <Footer />
     </div>
   );
 }
