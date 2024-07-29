@@ -1,241 +1,176 @@
 "use client";
 import Section from "@/components/generic/Section";
 import NavBar from "@/components/app/NavBar";
-import Box from "@/components/generic/Box";
 import Stack from "@/components/generic/Stack";
 import {
   DEFAULT_CONTENT_GAP,
   DEFAULT_SECTION_GAP,
 } from "@/other/style.constant";
-import FlightIcon from "@/assets/plane.svg";
-import CabIcon from "@/assets/cabs.svg";
-import HotelIcon from "@/assets/hotels.svg";
-import RoundedButton from "@/components/generic/RoundedButton";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import SwitchButton from "@/assets/switch_button.svg";
+import FlightSearch from "@/components/pages/flight/home/FlightSearch";
+import Box from "@/components/generic/Box";
+import { LegacyRef, RefAttributes, useRef, useState } from "react";
 import Image from "next/image";
-import StudentIcon from "@/assets/student_15399518 1.svg";
-import SeniorCitizenIcon from "@/assets/grandfather_522280 1.svg";
-import ArmedForcesIcon from "@/assets/user-pilot-tie_9585967 1.svg";
-import DoctorIcon from "@/assets/user-md_9856850 1.svg";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import Footer from "@/components/Footer";
+import Container from "@/components/generic/Container";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
-const navLinks = [
+const faqCarouselData = [
   {
-    title: "Flights",
-    navigateUrl: "/flights",
-    icon: FlightIcon,
+    title: "How do I book a flight on Flew With Us?",
+    description:
+      "To book a flight, visit the Flew With Us website or mobile app. Enter your departure and destination cities, travel dates, and passenger details. Browse available flights, select your preferred option, and complete the booking process.",
   },
   {
-    title: "Hotels",
-    navigateUrl: "/hotels",
-    icon: HotelIcon,
+    title: "Can I book a hotel and train along with my flight on Flew With Us?",
+    description:
+      "Yes, Flew With Us offers a one-stop solution for your travel needs. You can book hotels and trains in addition to your flight reservation, providing a seamless travel experience.",
   },
   {
-    title: "Cabs",
-    navigateUrl: "/cabs",
-    icon: CabIcon,
+    title: "What information do I need to provide for a flight booking?",
+    description:
+      "You'll need to provide passenger details, including names and contact information. Additionally, you'll need payment details to complete the booking.",
+  },
+  {
+    title: "How do I check my flight status on Flew With Us?",
+    description:
+      "You can check your flight status by logging into your Flew With Us account and navigating to the My Trips section. Alternatively, you can use our flight status tool by entering your flight details.",
+  },
+  {
+    title: "What is the Flew With Us cancellation policy?",
+    description:
+      "Flew With Us follows a cancellation policy that may vary depending on the service (flight, hotel, or train) and the specific terms of your booking. Please refer to the terms and conditions during the booking process for detailed cancellation information.",
+  },
+  {
+    title: "Do I need to create an account to book on Flew With Us?",
+    description:
+      "While browsing is open to all users, creating a Flew With Us account allows you to access additional features, store your travel preferences, and track your bookings in one convenient place.",
   },
 ];
 
-const flightTypes = [
+const informationCardsData = [
   {
-    title: "One way",
-    value: "oneway",
+    iconUrl: "/info_a.png",
+    title: "Seamless Booking Experience",
+    description:
+      "Easily book your flights with our user-friendly platform, offering quick searches, flexible options, and secure transactions.",
   },
   {
-    title: "Round trip",
-    value: "roundtrip",
-  },
-];
-const offerOptions = [
-  {
-    title: "Student",
-    description: "Extra discounts/baggage",
-    value: "student",
-    icon: StudentIcon,
+    iconUrl: "/info_b.png",
+    title: "Best Price Guarantee",
+    description:
+      "Enjoy competitive fares and exclusive deals, ensuring you get the best value for your money every time you book.",
   },
   {
-    title: "Senior Citizens",
-    description: "up to ₹600 off",
-    value: "seniorcitizen",
-    icon: SeniorCitizenIcon,
-  },
-  {
-    title: "Armed Forces",
-    description: "up to ₹600 off",
-    value: "armedforces",
-    icon: ArmedForcesIcon,
-  },
-  {
-    title: "Doctor & Nurses",
-    description: "up to ₹600 off",
-    value: "medical",
-    icon: DoctorIcon,
+    iconUrl: "/info_c.png",
+    title: "24/7 Customer Support",
+    description:
+      "Rely on our dedicated support team, available around the clock to assist with your booking and travel needs.",
   },
 ];
 
 export default function FlightHome() {
-  const pathname = usePathname();
+  const settings = {
+    className: "center",
+    centerMode: true,
+    infinite: true,
+    centerPadding: "0px",
+    slidesToShow: 2,
+    speed: 500,
+    dots: true,
+    responsive: [
+      {
+        breakpoint: 600,
+        settings: {
+          centerPadding: "0px",
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
 
-  const [flightType, setFlightType] = useState("oneway");
+  const slider = useRef<Slider>(null);
 
   return (
-    <><Section fullHeight={true} backgroundImageUrl="/flight_home_image.png">
-      <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
-        <NavBar />
-
-        <Box>
-          <Stack direction="vertical" gap={DEFAULT_CONTENT_GAP}>
-            {/* FLIGHTS, HOTELS, CABS BUTTONS */}
-            <div className="flex items-center justify-center gap-4 lg:justify-start">
-              {navLinks?.map((item, index) => (
-                <RoundedButton
-                  key={index}
-                  title={item.title}
-                  isSelected={pathname === item.navigateUrl}
-                  icon={item.icon}
-                  navigateUrl={item.navigateUrl}
-                  transparentMode={false}
-                  hideLabelOnSmallScreen={true} />
-              ))}
-            </div>
-
-            {/* DESKTOP HEADING */}
-            <div className="hidden text-2xl font-bold lg:block">
-              Millions of cheap flights. One simple search.
-            </div>
-
-            {/* MOBILE HEADING */}
-            <div className="mx-auto block w-full rounded-full bg-green-600 p-1 text-center font-medium text-white md:w-1/2 lg:hidden">
-              NO CONVINIENCE FEE, NO PRICE HIKE
-            </div>
-
-            {/* FLIGHT TYPE RADIO BUTTONS */}
-            <div className="flex items-center gap-4">
-              {flightTypes.map((type, index) => (
-                <div className="flex items-center" key={index}>
-                  <input
-                    id={type.value + index}
-                    type="radio"
-                    value={type.value}
-                    name="default-radio"
-                    className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600" />
-                  <label
-                    htmlFor={type.value + index}
-                    className="ms-2 text-sm font-medium"
-                  >
-                    {type.title}
-                  </label>
+    <div className={`relative h-full`}>
+      <div className="absolute left-0 right-0 top-0 z-[-1] w-full">
+        <div className="h-screen w-full">
+          <Image
+            src="/flight_home_image.png"
+            fill={true}
+            alt="background image"
+          />
+        </div>
+      </div>
+      <Container>
+        <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
+          <NavBar />
+          <FlightSearch />
+          <Section title="Information Flew With Us">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              {informationCardsData?.map((item, index) => (
+                <div key={index} className="rounded-lg bg-background p-8">
+                  <Stack gap={10} direction="vertical">
+                    <div className="flex items-center justify-center">
+                      <Image
+                        src={item.iconUrl}
+                        width={60}
+                        height={60}
+                        alt={item.title}
+                      />
+                    </div>
+                    <div className="text-center text-lg font-semibold">
+                      {item.title}
+                    </div>
+                    <div className="text-center text-sm text-textbody">
+                      {item.description}
+                    </div>
+                  </Stack>
                 </div>
               ))}
             </div>
-
-            {/* FLIGHT CHOOSER */}
-            <div className="flex flex-wrap items-center gap-4">
-              {/* FROM AND TO */}
-              <div className="flex w-full items-center justify-between self-stretch lg:w-[30%]">
-                <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-                  <div className="text-sm font-medium">From</div>
-                  <div className="mt-2 line-clamp-1 text-lg font-bold">
-                    Delhi
-                  </div>
-                  <div className="text-xs font-light text-textbody">
-                    DEL, Delhi Airport India
-                  </div>
-                </div>
-                <div className="m-2 flex h-10 w-10 items-center justify-center">
-                  <Image
-                    src={SwitchButton}
-                    width={30}
-                    height={30}
-                    alt="Switch flights"
-                    className="mx-4 cursor-pointer" />
-                </div>
-                <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-                  <div className="text-sm font-medium">To</div>
-                  <div className="mt-2 line-clamp-1 text-lg font-bold">
-                    Bangalore, KA
-                  </div>
-                  <div className="text-xs font-light text-textbody">
-                    Indira Gandhi International...
-                  </div>
-                </div>
-              </div>
-
-              {/* DEPART AND RETURN */}
-              <div className="flex w-full items-center justify-between self-stretch lg:w-[30%]">
-                <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-                  <div className="text-sm font-medium">Depart</div>
-                  <div className="mt-2 line-clamp-1 text-lg font-bold">05</div>
-                  <div className="text-xs font-light text-textbody">
-                    Jul&apos;24 Friday
-                  </div>
-                </div>
-                <div className="m-2 flex h-10 w-10 items-center justify-center"></div>
-                <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-                  <div className="text-sm font-medium">Return</div>
-                  <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
-                  <div className="text-xs font-light text-textbody">
-                    Tap to add a return date for bigger discounts
-                  </div>
-                </div>
-              </div>
-
-              {/* TRAVELLER AND CABIN CLASS */}
-              <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4 lg:w-[15%]">
-                <div className="text-sm font-medium">
-                  Travelers & Cabin Class
-                </div>
-                <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
-                <div className="text-xs font-light text-textbody">
-                  1 Adult, Economy
-                </div>
-              </div>
-
-              {/* SEARCH BUTTON */}
-              <div className="flex w-full cursor-pointer items-center justify-center self-stretch rounded-full border border-primary-500 bg-primary-500 p-4 text-onprimary hover:bg-primary-600 lg:w-[10%] lg:rounded-xl">
-                Search
-              </div>
-            </div>
-
-            {/* FLIGHT FARE CHOOSER */}
-            <div className="hidden lg:flex items-center gap-4">
+          </Section>
+          <Section
+            title="Frequently Asked Questions"
+            actions={
               <div>
-                <div className="font-bold">Select a special fare</div>
-                <div className="text-sm text-textbody">Extra Savings</div>
-              </div>
-              <div className="flex items-center gap-4">
-                {offerOptions.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex cursor-pointer items-center gap-4 rounded-xl border border-gray-300 p-4"
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => slider?.current?.slickPrev()}
+                    className="cursor-pointer rounded-md bg-primary-50 p-2 hover:bg-primary-100"
                   >
-                    <input
-                      id={item.value + index}
-                      type="radio"
-                      value={item.value}
-                      name="default-radio"
-                      className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600" />
-                    <Image
-                      width={24}
-                      height={24}
-                      src={item.icon}
-                      alt={item.title} />
-                    <div>
-                      <div className="text-lg font-bold">{item.title}</div>
-                      <div className="text-xs">{item.description}</div>
+                    <MdChevronLeft />
+                  </button>
+                  <button
+                    onClick={() => slider?.current?.slickNext()}
+                    className="cursor-pointer rounded-md bg-primary-50 p-2 hover:bg-primary-100"
+                  >
+                    <MdChevronRight />
+                  </button>
+                </div>
+              </div>
+            }
+          >
+            <div className="slider-container mt-4">
+              <Slider ref={slider} {...settings}>
+                {faqCarouselData.map((item, index) => (
+                  <div key={index} className="overflow-hidden px-2 md:px-8 py-2">
+                    <div className="w-full self-stretch rounded-xl bg-[#F1F9FF] px-2 md:px-8 py-4">
+                      <div className="text-xl font-semibold">
+                        Q{index + 1}. {item.title}
+                      </div>
+                      <div className="mt-2 text-sm">{item.description}</div>
                     </div>
                   </div>
                 ))}
-              </div>
+              </Slider>
             </div>
-          </Stack>
-        </Box>
-      </Stack>
-    </Section>
-        <Footer />
-    </>
+          </Section>
+        </Stack>
+      </Container>
+    </div>
   );
 }
