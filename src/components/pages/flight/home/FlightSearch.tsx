@@ -18,6 +18,9 @@ import ArmedForcesIcon from "@/assets/user-pilot-tie_9585967 1.svg";
 import DoctorIcon from "@/assets/user-md_9856850 1.svg";
 import { DEFAULT_CONTENT_GAP } from "@/other/style.constant";
 import Box from "@/components/generic/Box";
+import Popover from "@/components/generic/Popover";
+import { LuSearch } from "react-icons/lu";
+import { MdFlightTakeoff } from "react-icons/md";
 
 const navLinks = [
   {
@@ -71,6 +74,44 @@ const offerOptions = [
     description: "up to ₹600 off",
     value: "medical",
     icon: DoctorIcon,
+  },
+];
+
+const flightData = [
+  {
+    city: "City name",
+    airport: "Airport name",
+    code: "BOM",
+  },
+  {
+    city: "City name",
+    airport: "Airport name",
+    code: "BOM",
+  },
+  {
+    city: "City name",
+    airport: "Airport name",
+    code: "BOM",
+  },
+  {
+    city: "City name",
+    airport: "Airport name",
+    code: "BOM",
+  },
+  {
+    city: "City name",
+    airport: "Airport name",
+    code: "BOM",
+  },
+  {
+    city: "City name",
+    airport: "Airport name",
+    code: "BOM",
+  },
+  {
+    city: "City name",
+    airport: "Airport name",
+    code: "BOM",
   },
 ];
 
@@ -131,13 +172,58 @@ export default function FlightSearch() {
         <div className="flex flex-wrap items-center gap-4">
           {/* FROM AND TO */}
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
-            <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-              <div className="text-sm font-medium">From</div>
-              <div className="mt-2 line-clamp-1 text-lg font-bold">Delhi</div>
-              <div className="text-xs font-light text-textbody">
-                DEL, Delhi Airport India
+            <Popover
+              containerClassname="w-full cursor-pointer self-stretch"
+              appearContent={
+                <div className="rounded-xl border border-gray-300 p-4">
+                  <div className="text-sm font-medium">From</div>
+                  <div className="mt-2 line-clamp-1 text-lg font-bold">
+                    Delhi
+                  </div>
+                  <div className="text-xs font-light text-textbody">
+                    DEL, Delhi Airport India
+                  </div>
+                </div>
+              }
+            >
+              <div className="w-[300px] md:w-[350px]">
+                <div className="flex items-center gap-2 rounded-b-3xl p-3 shadow-md">
+                  <div>
+                    <LuSearch size={20} />
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      placeholder="From"
+                      className="w-full border-none outline-none"
+                    />
+                  </div>
+                </div>
+                <div className="p-2">
+                  <div className="text-base text-gray-600">POPULAR CITIES</div>
+                  <div className="mt-2 h-[300px] overflow-y-auto scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-gray-300 scrollbar-track-gray-50">
+                    {flightData?.map((item, index) => (
+                      <div
+                        className="mt-2 flex cursor-pointer items-center justify-between rounded-md px-2 py-1 hover:bg-gray-100"
+                        key={index}
+                      >
+                        <div className="flex gap-3">
+                          <div>
+                            <MdFlightTakeoff size={20} />
+                          </div>
+                          <div>
+                            <div className="font-bold">{item.city}</div>
+                            <div>{item.airport}</div>
+                          </div>
+                        </div>
+                        <div>{item.code}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            </Popover>
+
             <div className="m-2 flex h-10 w-10 items-center justify-center">
               <Image
                 src={SwitchButton}
@@ -167,7 +253,7 @@ export default function FlightSearch() {
                 Jul&apos;24 Friday
               </div>
             </div>
-            <div className="m-2 flex h-10 w-14 lg:w-0 items-center justify-center"></div>
+            <div className="m-2 flex h-10 w-14 items-center justify-center lg:w-0"></div>
             <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
               <div className="text-sm font-medium">Return</div>
               <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
