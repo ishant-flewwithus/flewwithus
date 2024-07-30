@@ -1,3 +1,4 @@
+"use client";
 import Section from "@/components/generic/Section";
 import Stack from "@/components/generic/Stack";
 import Image from "next/image";
