@@ -6,28 +6,54 @@ import { DEFAULT_SECTION_GAP } from "@/other/style.constant";
 import Footer from "./Footer";
 
 interface PageProps {
+  headerChild?: React.ReactNode;
   children?: React.ReactNode;
+  overlapChildrenOverHeader?: boolean;
 }
 
-export default function Page({ children }: PageProps) {
+export default function Page({
+  children,
+  headerChild,
+  overlapChildrenOverHeader = false,
+}: PageProps) {
   return (
-    <div className={`relative h-full`}>
-      <div className="absolute left-0 right-0 top-0 z-[-1] w-full">
-        <div className="h-screen w-full">
-          <Image
-            src="/flight_home_image.png"
-            fill={true}
-            alt="background image"
-          />
+    <div>
+      <div className="relative">
+        {/* HEADER CHILD */}
+        <div className="w-full">
+          {/* BACKGROUND IMAGE */}
+          <div className="absolute left-0 right-0 top-0 z-[-1] h-full w-full">
+            <div className="h-full w-full">
+              <Image
+                src="/flight_home_image.png"
+                fill={true}
+                alt="background image"
+              />
+            </div>
+          </div>
+          <div>
+            {/* HEADER CONTENT */}
+            <Container>
+              <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
+                <NavBar />
+                <div className="mb-4">{headerChild}</div>
+                {overlapChildrenOverHeader && <div></div>}
+              </Stack>
+            </Container>
+          </div>
         </div>
       </div>
-      <Container>
-        <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
-          <NavBar />
-          {children}
-        </Stack>
-      </Container>
-      <Footer />
+      {/* CHILDREN */}
+      <div>
+        <Container size="small">
+          <div className={overlapChildrenOverHeader ? "mt-[-80px]" : "mt-0"}>
+            <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
+              {children}
+            </Stack>
+          </div>
+        </Container>
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -107,7 +107,7 @@ export default function NavBar() {
         {/* LOGO */}
         <div className="relative h-[45px] w-[150px] lg:h-[55px] lg:w-[186px]">
           <Image
-            src="logo_white_icon_text.svg"
+            src="/logo_white_icon_text.svg"
             alt="Flew With Us Logo"
             layout="fill"
           />

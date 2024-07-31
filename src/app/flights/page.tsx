@@ -12,8 +12,7 @@ import Page from "@/components/app/Page";
 
 export default function FlightHome() {
   return (
-    <Page>
-      <FlightSearch />
+    <Page headerChild={<FlightSearch />} overlapChildrenOverHeader={true}>
       <Features />
       <FAQ />
     </Page>

@@ -21,6 +21,9 @@ import Box from "@/components/generic/Box";
 import Popover from "@/components/generic/Popover";
 import { LuSearch } from "react-icons/lu";
 import { MdFlightTakeoff } from "react-icons/md";
+import useSWR from "swr";
+import Api from "@/util/Api";
+import axios from "axios";
 
 const navLinks = [
   {
@@ -119,6 +122,19 @@ export default function FlightSearch() {
   const pathname = usePathname();
 
   const [flightType, setFlightType] = useState("oneway");
+
+  // const getFlights = async () => {
+  //   try {
+  //     const BASE_URL = "http://localhost:5000/fwu/api/v1";
+  //     const data = await axios.get(`${BASE_URL}/home/airports`);
+  //     alert("Data: " + data);
+  //   } catch (err) {
+  //     alert("Error: " + err);
+  //   }
+  // };
+
+  // const { data: user, isLoading, error, mutate } = useSWR("user", getFlights);
+
   return (
     <Box>
       <Stack direction="vertical" gap={DEFAULT_CONTENT_GAP}>
@@ -201,7 +217,7 @@ export default function FlightSearch() {
                 </div>
                 <div className="p-2">
                   <div className="text-base text-gray-600">POPULAR CITIES</div>
-                  <div className="mt-2 h-[300px] overflow-y-auto scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-gray-300 scrollbar-track-gray-50">
+                  <div className="mt-2 h-[300px] overflow-y-auto scrollbar-thin scrollbar-track-gray-50 scrollbar-thumb-gray-300 scrollbar-track-rounded-full">
                     {flightData?.map((item, index) => (
                       <div
                         className="mt-2 flex cursor-pointer items-center justify-between rounded-md px-2 py-1 hover:bg-gray-100"
@@ -273,9 +289,12 @@ export default function FlightSearch() {
           </div>
 
           {/* SEARCH BUTTON */}
-          <div className="flex w-full cursor-pointer items-center justify-center self-stretch rounded-full border border-primary-500 bg-primary-500 p-4 text-onprimary hover:bg-primary-600 lg:w-[10%] lg:rounded-xl">
+          <Link
+            href="/flights/search"
+            className="flex w-full cursor-pointer items-center justify-center self-stretch rounded-full border border-primary-500 bg-primary-500 p-4 text-onprimary hover:bg-primary-600 lg:w-[10%] lg:rounded-xl"
+          >
             Search
-          </div>
+          </Link>
         </div>
 
         {/* FLIGHT FARE CHOOSER */}
