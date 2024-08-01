@@ -18,12 +18,12 @@ import ArmedForcesIcon from "@/assets/user-pilot-tie_9585967 1.svg";
 import DoctorIcon from "@/assets/user-md_9856850 1.svg";
 import { DEFAULT_CONTENT_GAP } from "@/other/style.constant";
 import Box from "@/components/generic/Box";
-import Popover from "@/components/generic/Popover";
 import { LuSearch } from "react-icons/lu";
 import { MdFlightTakeoff } from "react-icons/md";
-import useSWR from "swr";
-import Api from "@/util/Api";
-import axios from "axios";
+import { Airport } from "@/models/Flight";
+import AirportPicker from "../common/AirportPicker";
+import DatePicker, { Calendar } from "@/components/generic/DatePicker";
+import { addDays, format, getDate } from "date-fns";
 
 const navLinks = [
   {
@@ -43,14 +43,14 @@ const navLinks = [
   },
 ];
 
-const flightTypes = [
-  {
-    title: "One way",
-    value: "oneway",
-  },
+const flightModes = [
   {
     title: "Round trip",
     value: "roundtrip",
+  },
+  {
+    title: "One way",
+    value: "oneway",
   },
 ];
 const offerOptions = [
@@ -80,60 +80,22 @@ const offerOptions = [
   },
 ];
 
-const flightData = [
-  {
-    city: "City name",
-    airport: "Airport name",
-    code: "BOM",
-  },
-  {
-    city: "City name",
-    airport: "Airport name",
-    code: "BOM",
-  },
-  {
-    city: "City name",
-    airport: "Airport name",
-    code: "BOM",
-  },
-  {
-    city: "City name",
-    airport: "Airport name",
-    code: "BOM",
-  },
-  {
-    city: "City name",
-    airport: "Airport name",
-    code: "BOM",
-  },
-  {
-    city: "City name",
-    airport: "Airport name",
-    code: "BOM",
-  },
-  {
-    city: "City name",
-    airport: "Airport name",
-    code: "BOM",
-  },
-];
-
 export default function FlightSearch() {
   const pathname = usePathname();
 
-  const [flightType, setFlightType] = useState("oneway");
+  const [flightMode, setFlightMode] = useState("roundtrip");
 
-  // const getFlights = async () => {
-  //   try {
-  //     const BASE_URL = "http://localhost:5000/fwu/api/v1";
-  //     const data = await axios.get(`${BASE_URL}/home/airports`);
-  //     alert("Data: " + data);
-  //   } catch (err) {
-  //     alert("Error: " + err);
-  //   }
-  // };
+  const [fromAirport, setFromAirport] = useState<Airport>();
+  const [toAirport, setToAirport] = useState<Airport>();
 
-  // const { data: user, isLoading, error, mutate } = useSWR("user", getFlights);
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(addDays(new Date(), 7));
+
+  const swapAirports = () => {
+    let temp = fromAirport;
+    setFromAirport(toAirport);
+    setToAirport(temp);
+  };
 
   return (
     <Box>
@@ -165,19 +127,18 @@ export default function FlightSearch() {
 
         {/* FLIGHT TYPE RADIO BUTTONS */}
         <div className="flex items-center gap-4">
-          {flightTypes.map((type, index) => (
+          {flightModes.map((type, index) => (
             <div className="flex items-center" key={index}>
               <input
-                id={type.value + index}
+                id={type.value}
                 type="radio"
                 value={type.value}
-                name="default-radio"
-                className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600"
+                checked={type.value === flightMode}
+                name="flight_mode"
+                className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 accent-primary-500"
+                onChange={(e) => setFlightMode(e.target.value)}
               />
-              <label
-                htmlFor={type.value + index}
-                className="ms-2 text-sm font-medium"
-              >
+              <label htmlFor={type.value} className="ms-2 text-sm font-medium">
                 {type.title}
               </label>
             </div>
@@ -188,95 +149,75 @@ export default function FlightSearch() {
         <div className="flex flex-wrap items-center gap-4">
           {/* FROM AND TO */}
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
-            <Popover
-              containerClassname="w-full cursor-pointer self-stretch"
-              appearContent={
-                <div className="rounded-xl border border-gray-300 p-4">
-                  <div className="text-sm font-medium">From</div>
-                  <div className="mt-2 line-clamp-1 text-lg font-bold">
-                    Delhi
-                  </div>
-                  <div className="text-xs font-light text-textbody">
-                    DEL, Delhi Airport India
-                  </div>
+            {flightMode === "roundtrip" && (
+              <>
+                <AirportPicker
+                  airport={fromAirport}
+                  setAirport={setFromAirport}
+                  label="From"
+                />
+                <div
+                  className="m-2 flex h-10 w-10 items-center justify-center"
+                  onClick={() => swapAirports()}
+                >
+                  <Image
+                    src={SwitchButton}
+                    width={30}
+                    height={30}
+                    alt="Switch flights"
+                    className="mx-4 cursor-pointer"
+                  />
                 </div>
-              }
-            >
-              <div className="w-[300px] md:w-[350px]">
-                <div className="flex items-center gap-2 rounded-b-3xl p-3 shadow-md">
-                  <div>
-                    <LuSearch size={20} />
-                  </div>
-                  <div className="flex-1">
-                    <input
-                      type="text"
-                      placeholder="From"
-                      className="w-full border-none outline-none"
-                    />
-                  </div>
-                </div>
-                <div className="p-2">
-                  <div className="text-base text-gray-600">POPULAR CITIES</div>
-                  <div className="mt-2 h-[300px] overflow-y-auto scrollbar-thin scrollbar-track-gray-50 scrollbar-thumb-gray-300 scrollbar-track-rounded-full">
-                    {flightData?.map((item, index) => (
-                      <div
-                        className="mt-2 flex cursor-pointer items-center justify-between rounded-md px-2 py-1 hover:bg-gray-100"
-                        key={index}
-                      >
-                        <div className="flex gap-3">
-                          <div>
-                            <MdFlightTakeoff size={20} />
-                          </div>
-                          <div>
-                            <div className="font-bold">{item.city}</div>
-                            <div>{item.airport}</div>
-                          </div>
-                        </div>
-                        <div>{item.code}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Popover>
+              </>
+            )}
 
-            <div className="m-2 flex h-10 w-10 items-center justify-center">
-              <Image
-                src={SwitchButton}
-                width={30}
-                height={30}
-                alt="Switch flights"
-                className="mx-4 cursor-pointer"
-              />
-            </div>
-            <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-              <div className="text-sm font-medium">To</div>
-              <div className="mt-2 line-clamp-1 text-lg font-bold">
-                Bangalore, KA
-              </div>
-              <div className="text-xs font-light text-textbody">
-                Indira Gandhi International...
-              </div>
-            </div>
+            <AirportPicker
+              airport={toAirport}
+              setAirport={setToAirport}
+              label="To"
+            />
           </div>
 
           {/* DEPART AND RETURN */}
+
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
-            <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-              <div className="text-sm font-medium">Depart</div>
-              <div className="mt-2 line-clamp-1 text-lg font-bold">05</div>
-              <div className="text-xs font-light text-textbody">
-                Jul&apos;24 Friday
-              </div>
-            </div>
+            <DatePicker
+              containerClassname="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4"
+              appearContent={
+                <div>
+                  <div className="text-sm font-medium">Depart</div>
+                  <div className="mt-2 line-clamp-1 text-lg font-bold">
+                    {getDate(fromDate)}
+                  </div>
+                  <div className="text-xs font-light text-textbody">
+                    {format(fromDate, "MMM yyyy, EE")}
+                  </div>
+                </div>
+              }
+              date={fromDate}
+              setDate={setFromDate}
+            />
+
             <div className="m-2 flex h-10 w-14 items-center justify-center lg:w-0"></div>
-            <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-              <div className="text-sm font-medium">Return</div>
-              <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
-              <div className="text-xs font-light text-textbody">
-                Tap to add a return date for bigger discounts
-              </div>
-            </div>
+
+            {flightMode === "roundtrip" && (
+              <DatePicker
+                containerClassname="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4"
+                appearContent={
+                  <div>
+                    <div className="text-sm font-medium">Return</div>
+                    <div className="mt-2 line-clamp-1 text-lg font-bold">
+                      {getDate(toDate)}
+                    </div>
+                    <div className="text-xs font-light text-textbody">
+                      {format(toDate, "MMM yyyy, EE")}
+                    </div>
+                  </div>
+                }
+                date={toDate}
+                setDate={setToDate}
+              />
+            )}
           </div>
 
           {/* TRAVELLER AND CABIN CLASS */}

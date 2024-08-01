@@ -50,6 +50,9 @@ export default function Features() {
     slidesToShow: 2,
     speed: 500,
     dots: true,
+    initialSlide: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
     responsive: [
       {
         breakpoint: 600,

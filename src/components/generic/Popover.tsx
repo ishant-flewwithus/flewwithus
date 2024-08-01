@@ -44,7 +44,7 @@ const Popover = ({
         {show && (
           <div
             ref={popupRef}
-            className="absolute mt-10 top-0 left-0 rounded-lg bg-white shadow-[0_4px_4px_4px_rgba(0,0,0,0.11)]"
+            className="absolute left-0 top-0 mt-10 rounded-lg bg-white shadow-[0_4px_4px_4px_rgba(0,0,0,0.11)]"
           >
             {children}
           </div>
