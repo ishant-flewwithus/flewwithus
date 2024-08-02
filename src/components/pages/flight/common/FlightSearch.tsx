@@ -28,6 +28,7 @@ import Popover from "@/components/generic/Popover";
 import Autocomplete from "@/components/generic/Autocomplete";
 import useSWR from "swr";
 import * as AirportApi from "@/network/flights/airport";
+import AutocompleteWithApiPopover from "@/components/generic/AutocompleteWithApi";
 
 const navLinks = [
   {
@@ -156,13 +157,6 @@ export default function FlightSearch() {
     setToAirport(temp);
   };
 
-  const {
-    data: airports,
-    isLoading,
-    error,
-    mutate,
-  } = useSWR("airports", AirportApi.getAirports);
-
   return (
     <Box>
       <Stack direction="vertical" gap={DEFAULT_CONTENT_GAP}>
@@ -217,9 +211,11 @@ export default function FlightSearch() {
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
             <div className="w-full cursor-pointer self-stretch">
               {/* FROM AIRPORT */}
-              <Autocomplete
+              <AutocompleteWithApiPopover
                 label="From"
                 caption="POPULAR CITIES"
+                fetchFunction={AirportApi.searchAirports}
+                fetchFunctionKey="airports"
                 trigger={(selectedItem) => (
                   <div className="relative">
                     <div>
@@ -242,7 +238,6 @@ export default function FlightSearch() {
                     </div>
                   </div>
                 )}
-                data={airports || []}
                 renderContent={(airport) => (
                   <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md px-2 py-1 hover:bg-gray-100">
                     <div className="flex gap-3">
@@ -278,7 +273,7 @@ export default function FlightSearch() {
 
             <div className="w-full cursor-pointer self-stretch">
               {/* TO AIRPORT */}
-              <Autocomplete
+              <AutocompleteWithApiPopover
                 label="To"
                 caption="POPULAR CITIES"
                 trigger={(selectedItem) => (
@@ -303,7 +298,8 @@ export default function FlightSearch() {
                     </div>
                   </div>
                 )}
-                data={airports || []}
+                fetchFunction={AirportApi.getAirports}
+                fetchFunctionKey="airports"
                 renderContent={(airport) => (
                   <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md px-2 py-1 hover:bg-gray-100">
                     <div className="flex gap-3">
@@ -408,7 +404,7 @@ export default function FlightSearch() {
                           {flightClassOptions?.map((item, index) => (
                             <div
                               key={index}
-                              className={`${index == 2 ? "col-span-12" : "col-span-6"} text-center flex items-center justify-center cursor-pointer rounded-full p-3 text-xs ${flightClass === item ? "bg-primary-500 text-onprimary hover:bg-primary-500" : "bg-gray-200"} text-center`}
+                              className={`${index == 2 ? "col-span-12" : "col-span-6"} flex cursor-pointer items-center justify-center rounded-full p-3 text-center text-xs ${flightClass === item ? "bg-primary-500 text-onprimary hover:bg-primary-500" : "bg-gray-200"} text-center`}
                               onClick={() => setFlightClass(item)}
                             >
                               {item}
@@ -418,10 +414,10 @@ export default function FlightSearch() {
                       </div>
                     </div>
 
-                    <div className="col-span-12 md:col-span-6 flex items-end justify-end">
+                    <div className="col-span-12 flex items-end justify-end md:col-span-6">
                       <div
                         onClick={() => setShowFlightConfigDialog(false)}
-                        className="cursor-pointer w-full text-center rounded-full bg-primary-500 px-6 py-3 text-onprimary hover:bg-primary-600"
+                        className="w-full cursor-pointer rounded-full bg-primary-500 px-6 py-3 text-center text-onprimary hover:bg-primary-600"
                       >
                         Apply
                       </div>
