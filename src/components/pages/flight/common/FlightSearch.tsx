@@ -99,8 +99,8 @@ const FlightConfigCounter = ({
   setCount,
 }: FlightConfigCounterProps) => {
   return (
-    <div className="col-span-4 select-none rounded-md border border-gray-300 px-6 py-2">
-      <div className="text-center text-lg font-semibold">{title}</div>
+    <div className="col-span-6 select-none rounded-md border border-gray-300 px-6 py-2 md:col-span-4">
+      <div className="my-1 text-center text-base font-semibold">{title}</div>
       <div className="border-b-2 pb-2 text-center text-xs font-semibold">
         On the day of travel
       </div>
@@ -398,22 +398,32 @@ export default function FlightSearch() {
                       count={infantCount}
                       setCount={setInfantCount}
                     />
-                  </div>
-                  <div>
-                    <div className="mt-4 text-lg font-semibold">
-                      CHOOSE TRAVEL CLASS
+
+                    <div className="col-span-6">
+                      <div className="mt-6 text-lg font-semibold">
+                        CHOOSE TRAVEL CLASS
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="mt-3 grid grid-cols-12 gap-4 rounded-full bg-onprimary md:inline-flex md:gap-0 md:bg-gray-200">
+                          {flightClassOptions?.map((item, index) => (
+                            <div
+                              key={index}
+                              className={`${index == 2 ? "col-span-12" : "col-span-6"} text-center flex items-center justify-center cursor-pointer rounded-full p-3 text-xs ${flightClass === item ? "bg-primary-500 text-onprimary hover:bg-primary-500" : "bg-gray-200"} text-center`}
+                              onClick={() => setFlightClass(item)}
+                            >
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="mt-2 inline-flex rounded-full bg-gray-200">
-                        {flightClassOptions?.map((item, index) => (
-                          <div
-                            key={index}
-                            className={`cursor-pointer rounded-full p-3 text-xs ${flightClass === item ? "bg-primary-500 text-onprimary hover:bg-primary-500" : "hover:bg-gray-300"}`}
-                            onClick={() => setFlightClass(item)}
-                          >
-                            {item}
-                          </div>
-                        ))}
+
+                    <div className="col-span-12 md:col-span-6 flex items-end justify-end">
+                      <div
+                        onClick={() => setShowFlightConfigDialog(false)}
+                        className="cursor-pointer w-full text-center rounded-full bg-primary-500 px-6 py-3 text-onprimary hover:bg-primary-600"
+                      >
+                        Apply
                       </div>
                     </div>
                   </div>

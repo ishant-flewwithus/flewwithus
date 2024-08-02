@@ -8,26 +8,29 @@ interface PopoverProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Popover: React.FC<PopoverProps> = ({ trigger, render }) => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
-
+const Popover: React.FC<PopoverProps> = ({
+  trigger,
+  render,
+  open,
+  setOpen,
+}) => {
   return (
     <ReactPopover
-      isOpen={isPopoverOpen}
+      isOpen={open}
       positions={["bottom"]}
       align="end"
-      onClickOutside={() => setIsPopoverOpen(false)}
+      onClickOutside={() => setOpen(false)}
       containerClassName="z-[200]"
       content={({ position, childRect, popoverRect }) => (
         <div
           className="rounded-lg bg-onprimary px-4 py-2 shadow-xl"
-          onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+          //onClick={() => setOpen(!open)}
         >
           {render}
         </div>
       )}
     >
-      <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>{trigger}</div>
+      <div onClick={() => setOpen(!open)}>{trigger}</div>
     </ReactPopover>
   );
 };
