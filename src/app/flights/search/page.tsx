@@ -4,7 +4,7 @@ import Box from "@/components/generic/Box";
 import FormInputCheckbox from "@/components/generic/FormInputCheckbox";
 import Slider from "@/components/generic/Slider";
 import Stack from "@/components/generic/Stack";
-import FlightSearch from "@/components/pages/flight/home/FlightSearch";
+import FlightSearch from "@/components/pages/flight/common/FlightSearch";
 import { useState } from "react";
 import MorningEnabledIcon from "@/assets/morning_enabled.svg";
 import MorningDisabledIcon from "@/assets/morning_disabled.svg";

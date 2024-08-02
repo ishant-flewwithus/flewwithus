@@ -2,7 +2,7 @@ import Image from "next/image";
 import Container from "../generic/Container";
 import Stack from "../generic/Stack";
 import NavBar from "./NavBar";
-import { DEFAULT_SECTION_GAP } from "@/other/style.constant";
+import { DEFAULT_SECTION_GAP } from "@/constants/style.constant";
 import Footer from "./Footer";
 
 interface PageProps {

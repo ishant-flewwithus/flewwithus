@@ -1,6 +1,6 @@
 import NavBar from "@/components/app/NavBar";
-import { DEFAULT_SECTION_GAP } from "@/other/style.constant";
-import FlightSearch from "@/components/pages/flight/home/FlightSearch";
+import { DEFAULT_SECTION_GAP } from "@/constants/style.constant";
+import FlightSearch from "@/components/pages/flight/common/FlightSearch";
 import Image from "next/image";
 
 import Footer from "@/components/app/Footer";

@@ -1,56 +1,42 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import React, { ReactElement, ReactNode, useState } from "react";
+import { ArrowContainer, Popover as ReactPopover } from "react-tiny-popover";
 
 interface PopoverProps {
-  appearContent: ReactNode;
-  children: ReactNode;
-  containerClassname: string;
+  trigger: ReactElement;
+  render: ReactElement;
 }
 
-const Popover = ({
-  appearContent,
-  children,
-  containerClassname,
-}: PopoverProps) => {
-  const [show, setShow] = useState(false);
-
-  const togglePopover = () => {
-    setShow(!show);
-  };
-
-  const popupRef = useRef<HTMLDivElement>(null);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-      setShow(false);
-    }
-  };
-
-  useEffect(() => {
-    if (show) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [show]);
+const Popover: React.FC<PopoverProps> = ({ trigger, render }) => {
+  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
   return (
-    <div className={containerClassname}>
-      <div className="relative z-[10]">
-        <div onClick={togglePopover}>{appearContent}</div>
-        {show && (
-          <div
-            ref={popupRef}
-            className="absolute left-0 top-0 mt-10 rounded-lg bg-white shadow-[0_4px_4px_4px_rgba(0,0,0,0.11)]"
-          >
-            {children}
-          </div>
-        )}
-      </div>
-    </div>
+    <ReactPopover
+      isOpen={isPopoverOpen}
+      positions={["top", "right", "bottom", "left"]}
+      onClickOutside={() => setIsPopoverOpen(false)}
+      containerClassName="z-[200]"
+      content={({ position, childRect, popoverRect }) => (
+        // <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
+        //   position={position}
+        //   childRect={childRect}
+        //   popoverRect={popoverRect}
+        //   arrowColor={"white"}
+        //   arrowSize={10}
+        //   arrowStyle={{ opacity: 0.7 }}
+        //   className="popover-arrow-container"
+        //   arrowClassName="popover-arrow"
+        // >
+        <div
+          className="rounded-lg bg-onprimary px-4 py-2 shadow-xl"
+          onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+        >
+          {render}
+        </div>
+        // </ArrowContainer>
+      )}
+    >
+      <div onClick={() => setIsPopoverOpen(!isPopoverOpen)}>{trigger}</div>
+    </ReactPopover>
   );
 };
 

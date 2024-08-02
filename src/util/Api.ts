@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/other/site.constant";
+import { BASE_URL } from "@/constants/site.constant";
 import axios from "axios";
 class HttpError extends Error {
   constructor(message?: string) {
