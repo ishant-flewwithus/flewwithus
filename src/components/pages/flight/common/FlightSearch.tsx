@@ -233,7 +233,7 @@ export default function FlightSearch() {
                       <div className="rounded-xl border border-gray-300 p-4">
                         <div className="text-sm font-medium">From</div>
                         <div className="mt-2 line-clamp-1 text-lg font-bold">
-                          {selectedItem?.CITYNAME}
+                          {selectedItem?.CITYNAME || "Select"}
                         </div>
 
                         <div className="line-clamp-2 h-[2rem] text-xs font-light text-textbody">
@@ -269,8 +269,9 @@ export default function FlightSearch() {
               />
             </div>
 
+            {/* AiRPORT SWAP BUTTON */}
             <div
-              className="m-2 flex h-10 w-10 items-center justify-center"
+              className="m-2 flex items-center justify-center"
               onClick={() => swapAirports()}
             >
               <Image
@@ -278,7 +279,7 @@ export default function FlightSearch() {
                 width={30}
                 height={30}
                 alt="Switch flights"
-                className="mx-4 cursor-pointer"
+                className="mx-4 scale-[0.7] transform cursor-pointer lg:scale-[1]"
               />
             </div>
 
@@ -293,7 +294,7 @@ export default function FlightSearch() {
                       <div className="rounded-xl border border-gray-300 p-4">
                         <div className="text-sm font-medium">To</div>
                         <div className="mt-2 line-clamp-1 text-lg font-bold">
-                          {selectedItem?.CITYNAME}
+                          {selectedItem?.CITYNAME || "Select"}
                         </div>
 
                         <div className="line-clamp-2 h-[2rem] text-xs font-light text-textbody">
@@ -328,60 +329,48 @@ export default function FlightSearch() {
                 setValue={setToAirport}
               />
             </div>
-
-            {/* <Popover trigger={<button>Hi</button>} render={<div>Yo</div>} /> */}
-
-            {/* <Autocomplete
-              trigger={<button>Open Autocomplete</button>}
-              data={[
-                { id: 1, name: "Apple" },
-                { id: 2, name: "Banana" },
-                { id: 3, name: "Cherry" },
-              ]}
-              renderItem={(item) => <div>{item.name}</div>}
-            /> */}
           </div>
 
           {/* DEPART AND RETURN */}
 
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
-            <DatePicker
-              containerClassname="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4"
-              appearContent={
-                <div>
-                  <div className="text-sm font-medium">Depart</div>
-                  <div className="mt-2 line-clamp-1 text-lg font-bold">
-                    {getDate(fromDate)}
+            <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+              <DatePicker
+                value={fromDate}
+                setValue={setFromDate}
+                trigger={(item) => (
+                  <div>
+                    <div className="text-sm font-medium">Depart</div>
+                    <div className="mt-2 line-clamp-1 text-lg font-bold">
+                      {getDate(item!)}
+                    </div>
+                    <div className="text-xs font-light text-textbody">
+                      {format(item!, "MMM yyyy, EE")}
+                    </div>
                   </div>
-                  <div className="text-xs font-light text-textbody">
-                    {format(fromDate, "MMM yyyy, EE")}
-                  </div>
-                </div>
-              }
-              date={fromDate}
-              setDate={setFromDate}
-            />
+                )}
+              />
+            </div>
 
             <div className="m-2 flex h-10 w-14 items-center justify-center lg:w-0"></div>
 
-            {flightMode === "roundtrip" && (
+            <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
               <DatePicker
-                containerClassname="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4"
-                appearContent={
+                value={toDate}
+                setValue={setToDate}
+                trigger={(item) => (
                   <div>
                     <div className="text-sm font-medium">Return</div>
                     <div className="mt-2 line-clamp-1 text-lg font-bold">
-                      {getDate(toDate)}
+                      {getDate(item!)}
                     </div>
                     <div className="text-xs font-light text-textbody">
-                      {format(toDate, "MMM yyyy, EE")}
+                      {format(item!, "MMM yyyy, EE")}
                     </div>
                   </div>
-                }
-                date={toDate}
-                setDate={setToDate}
+                )}
               />
-            )}
+            </div>
           </div>
 
           {/* TRAVELLER AND CABIN CLASS */}
