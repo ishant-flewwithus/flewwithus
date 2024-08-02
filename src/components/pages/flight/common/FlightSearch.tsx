@@ -21,7 +21,6 @@ import Box from "@/components/generic/Box";
 import { LuSearch } from "react-icons/lu";
 import { MdFlightTakeoff } from "react-icons/md";
 import { Airport } from "@/models/Flight";
-import AirportPicker from "../common/AirportPicker";
 import DatePicker from "@/components/generic/DatePicker";
 import { addDays, format, getDate } from "date-fns";
 import { GrAdd, GrSubtract } from "react-icons/gr";
@@ -216,12 +215,6 @@ export default function FlightSearch() {
         <div className="flex flex-wrap items-center gap-4">
           {/* FROM AND TO */}
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
-            {/* <AirportPicker
-              airport={fromAirport}
-              setAirport={setFromAirport}
-              label="From"
-            /> */}
-
             <div className="w-full cursor-pointer self-stretch">
               {/* FROM AIRPORT */}
               <Autocomplete
@@ -374,60 +367,62 @@ export default function FlightSearch() {
           </div>
 
           {/* TRAVELLER AND CABIN CLASS */}
-          {/* <Popover
-            containerClassname="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4 lg:w-[17%]"
-            appearContent={
-              <div className="">
-                <div className="text-sm font-medium">
-                  Travelers & Cabin Class
-                </div>
-                <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
-                <div className="text-xs font-light text-textbody">
-                  1 Adult, Economy
-                </div>
-              </div>
-            }
-            open={showFlightConfigDialog}
-            setOpen={setShowFlightConfigDialog}
-          >
-            <div className="w-[760px] p-6">
-              <div className="grid grid-cols-12 gap-4">
-                <FlightConfigCounter
-                  title="ADULTS (12y+)"
-                  count={adultCount}
-                  setCount={setAdultCount}
-                />
-                <FlightConfigCounter
-                  title="CHILDREN (2-12y)"
-                  count={childrenCount}
-                  setCount={setChildrenCount}
-                />
-                <FlightConfigCounter
-                  title="INFANTS (0-2y)"
-                  count={infantCount}
-                  setCount={setInfantCount}
-                />
-              </div>
-              <div>
-                <div className="mt-4 text-lg font-semibold">
-                  CHOOSE TRAVEL CLASS
-                </div>
-                <div>
-                  <div className="mt-2 inline-flex rounded-full bg-gray-200">
-                    {flightClassOptions?.map((item, index) => (
-                      <div
-                        key={index}
-                        className={`cursor-pointer rounded-full p-3 text-xs ${flightClass === item ? "bg-primary-500 text-onprimary hover:bg-primary-500" : "hover:bg-gray-300"}`}
-                        onClick={() => setFlightClass(item)}
-                      >
-                        {item}
-                      </div>
-                    ))}
+          <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4 lg:w-[17%]">
+            <Popover
+              trigger={
+                <div className="">
+                  <div className="text-sm font-medium">
+                    Travelers & Cabin Class
+                  </div>
+                  <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
+                  <div className="text-xs font-light text-textbody">
+                    1 Adult, Economy
                   </div>
                 </div>
-              </div>
-            </div>
-          </Popover> */}
+              }
+              render={
+                <div className="p-6">
+                  <div className="grid grid-cols-12 gap-4">
+                    <FlightConfigCounter
+                      title="ADULTS (12y+)"
+                      count={adultCount}
+                      setCount={setAdultCount}
+                    />
+                    <FlightConfigCounter
+                      title="CHILDREN (2-12y)"
+                      count={childrenCount}
+                      setCount={setChildrenCount}
+                    />
+                    <FlightConfigCounter
+                      title="INFANTS (0-2y)"
+                      count={infantCount}
+                      setCount={setInfantCount}
+                    />
+                  </div>
+                  <div>
+                    <div className="mt-4 text-lg font-semibold">
+                      CHOOSE TRAVEL CLASS
+                    </div>
+                    <div>
+                      <div className="mt-2 inline-flex rounded-full bg-gray-200">
+                        {flightClassOptions?.map((item, index) => (
+                          <div
+                            key={index}
+                            className={`cursor-pointer rounded-full p-3 text-xs ${flightClass === item ? "bg-primary-500 text-onprimary hover:bg-primary-500" : "hover:bg-gray-300"}`}
+                            onClick={() => setFlightClass(item)}
+                          >
+                            {item}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+              open={showFlightConfigDialog}
+              setOpen={setShowFlightConfigDialog}
+            />
+          </div>
 
           {/* SEARCH BUTTON */}
           <Link
