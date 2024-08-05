@@ -178,14 +178,13 @@ export default function FlightSearch() {
           ))}
         </div>
 
-        {/* DESKTOP HEADING */}
-        <div className="hidden text-2xl font-bold lg:block">
-          Millions of cheap flights. One simple search.
-        </div>
-
-        {/* MOBILE HEADING */}
-        <div className="mx-auto block w-full rounded-full bg-green-600 p-2 text-center text-xs font-medium text-white sm:text-sm md:w-1/2 md:text-base lg:hidden">
-          NO CONVINIENCE FEE, NO PRICE HIKE
+        <div className="flex items-center justify-between gap-2">
+          <div className="hidden text-2xl font-bold lg:block">
+            Millions of cheap flights. One simple search.
+          </div>
+          <div className="inline-block rounded-full bg-green-600 px-8 py-2 text-center font-medium text-white text-sm">
+            NO CONVINIENCE FEE, NO PRICE HIKE
+          </div>
         </div>
 
         {/* FLIGHT TYPE RADIO BUTTONS */}
