@@ -103,7 +103,7 @@ const FlightConfigCounter = ({
   setCount,
 }: FlightConfigCounterProps) => {
   return (
-    <div className="col-span-6 select-none rounded-md border border-gray-300 px-6 py-2 md:col-span-4">
+    <div className="col-span-12 select-none rounded-md border border-gray-300 px-6 py-2 md:col-span-4">
       <div className="my-1 text-center text-base font-semibold">{title}</div>
       <div className="border-b-2 pb-2 text-center text-xs font-semibold">
         On the day of travel
@@ -402,7 +402,7 @@ export default function FlightSearch() {
                       setCount={setInfantCount}
                     />
 
-                    <div className="col-span-6">
+                    <div className="col-span-12 md:col-span-6">
                       <div className="mt-6 text-lg font-semibold">
                         CHOOSE TRAVEL CLASS
                       </div>

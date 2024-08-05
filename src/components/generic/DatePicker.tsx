@@ -38,6 +38,7 @@ export default function DatePicker({
             className="p-1 sm:p-6"
             classNames={{
               selected: `bg-primary-500 text-onprimary rounded-full`, // Highlight the selected day
+              today: `border-amber-500`,
             }}
           />
         </div>
