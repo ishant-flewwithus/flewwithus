@@ -32,6 +32,7 @@ import AutocompleteWithApi from "@/components/generic/AutocompleteWithApi";
 import { useDebounce } from "react-use";
 import { fetcher } from "@/util/fetcher";
 import { BASE_URL } from "@/constants/site.constant";
+import { toast } from "react-toastify";
 
 const navLinks = [
   {
@@ -160,6 +161,20 @@ export default function FlightSearch() {
     setToAirport(temp);
   };
 
+  const handleFlightSearch = () => {
+    if (!fromAirport) {
+      toast.error("Please select arrival location");
+    } else if (!toAirport) {
+      toast.error("Please select destination location");
+    } else if (!fromDate) {
+      toast.error("Please select flight date");
+    } else if (!toDate && flightMode === "roundtrip") {
+      toast.error("Please select return date");
+    } else {
+      //navigator
+    }
+  };
+
   return (
     <Box>
       <Stack direction="vertical" gap={DEFAULT_CONTENT_GAP}>
@@ -182,7 +197,7 @@ export default function FlightSearch() {
           <div className="hidden text-2xl font-bold lg:block">
             Millions of cheap flights. One simple search.
           </div>
-          <div className="inline-block rounded-full bg-green-600 px-8 py-2 text-center font-medium text-white text-sm">
+          <div className="inline-block rounded-full bg-green-600 px-8 py-2 text-center text-sm font-medium text-white">
             NO CONVINIENCE FEE, NO PRICE HIKE
           </div>
         </div>
@@ -349,23 +364,25 @@ export default function FlightSearch() {
 
             <div className="m-2 flex h-10 w-14 items-center justify-center lg:w-0"></div>
 
-            <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
-              <DatePicker
-                value={toDate}
-                setValue={setToDate}
-                trigger={(item) => (
-                  <div>
-                    <div className="text-sm font-medium">Return</div>
-                    <div className="mt-2 line-clamp-1 text-lg font-bold">
-                      {getDate(item!)}
+            {flightMode === "roundtrip" && (
+              <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
+                <DatePicker
+                  value={toDate}
+                  setValue={setToDate}
+                  trigger={(item) => (
+                    <div>
+                      <div className="text-sm font-medium">Return</div>
+                      <div className="mt-2 line-clamp-1 text-lg font-bold">
+                        {getDate(item!)}
+                      </div>
+                      <div className="text-xs font-light text-textbody">
+                        {format(item!, "MMM yyyy, EE")}
+                      </div>
                     </div>
-                    <div className="text-xs font-light text-textbody">
-                      {format(item!, "MMM yyyy, EE")}
-                    </div>
-                  </div>
-                )}
-              />
-            </div>
+                  )}
+                />
+              </div>
+            )}
           </div>
 
           {/* TRAVELLER AND CABIN CLASS */}
@@ -437,12 +454,12 @@ export default function FlightSearch() {
           </div>
 
           {/* SEARCH BUTTON */}
-          <Link
-            href="/flights/search"
+          <button
+            onClick={() => handleFlightSearch()}
             className="flex w-full cursor-pointer items-center justify-center self-stretch rounded-full border border-primary-500 bg-primary-500 p-4 text-onprimary hover:bg-primary-600 lg:w-[10%] lg:rounded-xl"
           >
             Search
-          </Link>
+          </button>
         </div>
 
         {/* FLIGHT FARE CHOOSER */}
