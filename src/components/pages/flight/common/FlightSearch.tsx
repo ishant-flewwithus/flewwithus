@@ -28,7 +28,7 @@ import Popover from "@/components/generic/Popover";
 import Autocomplete from "@/components/generic/Autocomplete";
 import useSWR from "swr";
 import * as AirportApi from "@/network/flights/airport";
-import AutocompleteWithApiPopover from "@/components/generic/AutocompleteWithApi";
+import AutocompleteWithApi from "@/components/generic/AutocompleteWithApi";
 import { useDebounce } from "react-use";
 import { fetcher } from "@/util/fetcher";
 import { BASE_URL } from "@/constants/site.constant";
@@ -153,34 +153,12 @@ export default function FlightSearch() {
   const [infantCount, setInfantCount] = useState(0);
 
   const [flightClass, setFlightClass] = useState("Premium Economy");
-  const [airportInput, setAirportInput] = useState("");
 
   const swapAirports = () => {
     let temp = fromAirport;
     setFromAirport(toAirport);
     setToAirport(temp);
   };
-
-  const {
-    data,
-    error,
-    mutate,
-    isLoading: loadingAirports,
-  } = useSWR(airportInput?.length > 2 ? `${BASE_URL}/home/airportbycode/?code=${airportInput}` : null, fetcher);
-
-  useDebounce(
-    () => {
-      if (airportInput?.length > 2) {
-        mutate();
-      }
-    },
-    2000,
-    [airportInput],
-  );
-
-  useEffect(() => {
-    mutate();
-  }, [airportInput, mutate]);
 
   return (
     <Box>
@@ -236,9 +214,13 @@ export default function FlightSearch() {
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
             <div className="w-full cursor-pointer self-stretch">
               {/* FROM AIRPORT */}
-              <AutocompleteWithApiPopover
-                label="From"
-                caption="POPULAR CITIES"
+
+              <AutocompleteWithApi<Airport>
+                fetchUrl={`${BASE_URL}/home/airportbycode/?code=`}
+                onSelect={(airport) => {
+                  setFromAirport(airport);
+                }}
+                placeholder="Search for airports"
                 trigger={(selectedItem) => (
                   <div className="relative">
                     <div>
@@ -275,12 +257,8 @@ export default function FlightSearch() {
                     <div>{airport?.AIRPORTCODE}</div>
                   </div>
                 )}
-                value={fromAirport}
-                setValue={setFromAirport}
-                inputValue={airportInput}
-                setInputValue={setAirportInput}
-                data={data}
-                isLoading={loadingAirports}
+                label1="From"
+                label2="POPULAR CITIES"
               />
             </div>
 
@@ -300,9 +278,13 @@ export default function FlightSearch() {
 
             <div className="w-full cursor-pointer self-stretch">
               {/* TO AIRPORT */}
-              <AutocompleteWithApiPopover
-                label="To"
-                caption="POPULAR CITIES"
+
+              <AutocompleteWithApi<Airport>
+                fetchUrl={`${BASE_URL}/home/airportbycode/?code=`}
+                onSelect={(airport) => {
+                  setToAirport(airport);
+                }}
+                placeholder="Search for airports"
                 trigger={(selectedItem) => (
                   <div className="relative">
                     <div>
@@ -325,8 +307,6 @@ export default function FlightSearch() {
                     </div>
                   </div>
                 )}
-                fetchFunction={AirportApi.getAirports}
-                fetchFunctionKey="airports"
                 renderContent={(airport) => (
                   <div className="mt-2 flex cursor-pointer items-center justify-between rounded-md px-2 py-1 hover:bg-gray-100">
                     <div className="flex gap-3">
@@ -341,8 +321,8 @@ export default function FlightSearch() {
                     <div>{airport?.AIRPORTCODE}</div>
                   </div>
                 )}
-                value={toAirport}
-                setValue={setToAirport}
+                label1="To"
+                label2="POPULAR CITIES"
               />
             </div>
           </div>
