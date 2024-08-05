@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import PlaneSvg from "@/assets/plane.svg";
-import { ReactNode, SVGProps, useRef } from "react";
+import { ReactNode, SVGProps, useEffect, useRef } from "react";
 import Link from "next/link";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Stack from "@/components/generic/Stack";
@@ -29,6 +29,9 @@ import Autocomplete from "@/components/generic/Autocomplete";
 import useSWR from "swr";
 import * as AirportApi from "@/network/flights/airport";
 import AutocompleteWithApiPopover from "@/components/generic/AutocompleteWithApi";
+import { useDebounce } from "react-use";
+import { fetcher } from "@/util/fetcher";
+import { BASE_URL } from "@/constants/site.constant";
 
 const navLinks = [
   {
@@ -150,12 +153,34 @@ export default function FlightSearch() {
   const [infantCount, setInfantCount] = useState(0);
 
   const [flightClass, setFlightClass] = useState("Premium Economy");
+  const [airportInput, setAirportInput] = useState("");
 
   const swapAirports = () => {
     let temp = fromAirport;
     setFromAirport(toAirport);
     setToAirport(temp);
   };
+
+  const {
+    data,
+    error,
+    mutate,
+    isLoading: loadingAirports,
+  } = useSWR(airportInput?.length > 2 ? `${BASE_URL}/home/airportbycode/?code=${airportInput}` : null, fetcher);
+
+  useDebounce(
+    () => {
+      if (airportInput?.length > 2) {
+        mutate();
+      }
+    },
+    2000,
+    [airportInput],
+  );
+
+  useEffect(() => {
+    mutate();
+  }, [airportInput, mutate]);
 
   return (
     <Box>
@@ -214,8 +239,6 @@ export default function FlightSearch() {
               <AutocompleteWithApiPopover
                 label="From"
                 caption="POPULAR CITIES"
-                fetchFunction={AirportApi.searchAirports}
-                fetchFunctionKey="airports"
                 trigger={(selectedItem) => (
                   <div className="relative">
                     <div>
@@ -254,6 +277,10 @@ export default function FlightSearch() {
                 )}
                 value={fromAirport}
                 setValue={setFromAirport}
+                inputValue={airportInput}
+                setInputValue={setAirportInput}
+                data={data}
+                isLoading={loadingAirports}
               />
             </div>
 

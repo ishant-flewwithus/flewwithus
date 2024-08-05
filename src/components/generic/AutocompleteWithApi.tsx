@@ -4,30 +4,30 @@ import { Popover } from "react-tiny-popover";
 import useSWR from "swr";
 import { useDebounce } from "react-use";
 
-interface AutocompleteWithApiPopoverProps<T,> {
+interface AutocompleteWithApiPopoverProps<T> {
   trigger: (selectedItem: T | null) => React.ReactNode;
   renderContent: (item: T) => React.ReactNode;
   label: string;
   caption: string;
   value: T;
-  setValue: React.Dispatch<React.SetStateAction<any>>;
+  setValue: React.Dispatch<React.SetStateAction<T>>;
+  data: T[] | undefined;
+  isLoading: boolean;
   inputValue: string;
   setInputValue: React.Dispatch<React.SetStateAction<string>>;
-  isLoading: boolean;
-  data: T[];
 }
 
 const AutocompleteWithApiPopover = <T,>({
   trigger,
-  isLoading,
   renderContent,
   value,
   setValue,
-  label,
-  caption,
   inputValue,
   setInputValue,
+  label,
+  caption,
   data,
+  isLoading = false,
 }: AutocompleteWithApiPopoverProps<T>) => {
   const [searchStr, setSearchStr] = useState("");
 
