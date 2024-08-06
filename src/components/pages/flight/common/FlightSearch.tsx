@@ -33,6 +33,7 @@ import { useDebounce } from "react-use";
 import { fetcher } from "@/util/fetcher";
 import { BASE_URL } from "@/constants/site.constant";
 import { toast } from "react-toastify";
+import * as FlightApi from "@/network/flights/flight";
 
 const navLinks = [
   {
@@ -161,7 +162,7 @@ export default function FlightSearch() {
     setToAirport(temp);
   };
 
-  const handleFlightSearch = () => {
+  const handleFlightSearch = async () => {
     if (!fromAirport) {
       toast.error("Please select arrival location");
     } else if (!toAirport) {
@@ -171,7 +172,22 @@ export default function FlightSearch() {
     } else if (!toDate && flightMode === "roundtrip") {
       toast.error("Please select return date");
     } else {
-      //navigator
+      let data = await FlightApi.searchFlights({
+        AdultCount: adultCount,
+        ChildCount: childrenCount,
+        InfantCount: infantCount,
+        JourneyType: flightMode === "oneway" ? 1 : 2, // TODO
+        // PreferredAirlines: null, // TODO
+        DirectFlight: false, // TODO
+        OneStopFlight: false, // TODO
+        Origin: fromAirport.AIRPORTCODE,
+        Destination: toAirport.AIRPORTCODE,
+        FlightCabinClass: 1, // TODO
+        DepartureDate: fromDate,
+        ArrivalTime: toDate,
+        // Sources: null, // TODO
+      });
+      console.log("Results: ", data);
     }
   };
 
@@ -268,7 +284,7 @@ export default function FlightSearch() {
                         <div>{airport?.AIRPORTNAME}</div>
                       </div>
                     </div>
-                    <div>{airport?.AIRPORTCODE}</div>
+                    <div className="ml-5">{airport?.AIRPORTCODE}</div>
                   </div>
                 )}
                 label1="From"
@@ -332,7 +348,7 @@ export default function FlightSearch() {
                         <div>{airport?.AIRPORTNAME}</div>
                       </div>
                     </div>
-                    <div>{airport?.AIRPORTCODE}</div>
+                    <div className="ml-5">{airport?.AIRPORTCODE}</div>
                   </div>
                 )}
                 label1="To"

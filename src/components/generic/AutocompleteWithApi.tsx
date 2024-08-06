@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import useSWR from "swr";
 import { Popover } from "react-tiny-popover";
 import { LuSearch } from "react-icons/lu";
+import { useDebounce } from "react-use";
 interface AutocompleteProps<T> {
   fetchUrl: string;
   renderContent: (item: T) => React.ReactNode;
@@ -46,15 +47,15 @@ function AutocompleteWithApi<T>({
   );
 
   // Handle input value change with debounce
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedInput(inputValue);
-    }, debounceTime);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [inputValue, debounceTime]);
+  useDebounce(
+    () => {
+      if (inputValue?.length > 2) {
+        setDebouncedInput(inputValue);
+      }
+    },
+    500,
+    [inputValue],
+  );
 
   return (
     <Popover

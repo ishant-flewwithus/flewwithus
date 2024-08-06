@@ -6,3 +6,7 @@ export interface Airport {
   AIRPORTCODE: string;
   AIRPORTNAME: string;
 }
+
+export interface Flight {
+  
+}
