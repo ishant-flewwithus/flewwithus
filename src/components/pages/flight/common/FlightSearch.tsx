@@ -253,7 +253,7 @@ export default function FlightSearch() {
             <div className="w-full cursor-pointer self-stretch">
               {/* FROM AIRPORT */}
               <AutocompleteWithApi<AirportDBItem>
-                fetchUrl={`${process.env.BASE_URL}/home/airportbycode/?code=`}
+                fetchUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setFromAirport(airport);
                 }}
@@ -316,7 +316,7 @@ export default function FlightSearch() {
             <div className="w-full cursor-pointer self-stretch">
               {/* TO AIRPORT */}
               <AutocompleteWithApi<AirportDBItem>
-                fetchUrl={`/home/airportbycode/?code=`}
+                fetchUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setToAirport(airport);
                 }}

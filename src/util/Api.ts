@@ -32,7 +32,7 @@ export class ConflictError extends HttpError {}
 export class TooManyRequestsError extends HttpError {}
 
 const axiosInstance = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   // timeout: 5000, // Abort req if no response in specified time
   //withCredentials: true,
 });
