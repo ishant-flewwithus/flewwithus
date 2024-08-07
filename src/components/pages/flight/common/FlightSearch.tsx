@@ -316,7 +316,7 @@ export default function FlightSearch() {
 
             <div className="w-full cursor-pointer self-stretch">
               {/* TO AIRPORT */}
-              <AutocompleteWithApi<Airport>
+              <AutocompleteWithApi<AirportDBItem>
                 fetchUrl={`${BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setToAirport(airport);
