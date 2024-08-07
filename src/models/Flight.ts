@@ -176,3 +176,14 @@ export interface FlightSearchResult {
   ValidatingAirline: string;
   FareClassification: FareClassificationDetails;
 }
+
+// For airport search, not related to TBO
+export interface AirportDBItem {
+  AIRPORTCODE: string;
+  AIRPORTNAME: string;
+  TERMINAL: string;
+  CITYCODE: string;
+  CITYNAME: string;
+  COUNTRYCODE: string;
+  COUNTRYNAME: string;
+}

@@ -20,7 +20,7 @@ import { DEFAULT_CONTENT_GAP } from "@/constants/style.constant";
 import Box from "@/components/generic/Box";
 import { LuSearch } from "react-icons/lu";
 import { MdFlightTakeoff } from "react-icons/md";
-import { Airport } from "@/models/Flight";
+import { Airport, AirportDBItem } from "@/models/Flight";
 import DatePicker from "@/components/generic/DatePicker";
 import { addDays, format, getDate } from "date-fns";
 import { GrAdd, GrSubtract } from "react-icons/gr";
@@ -144,8 +144,8 @@ export default function FlightSearch() {
 
   const [flightMode, setFlightMode] = useState("1");
 
-  const [fromAirport, setFromAirport] = useState<Airport>();
-  const [toAirport, setToAirport] = useState<Airport>();
+  const [fromAirport, setFromAirport] = useState<AirportDBItem>();
+  const [toAirport, setToAirport] = useState<AirportDBItem>();
 
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(addDays(new Date(), 7));
@@ -253,7 +253,7 @@ export default function FlightSearch() {
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
             <div className="w-full cursor-pointer self-stretch">
               {/* FROM AIRPORT */}
-              <AutocompleteWithApi<Airport>
+              <AutocompleteWithApi<AirportDBItem>
                 fetchUrl={`${BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setFromAirport(airport);
