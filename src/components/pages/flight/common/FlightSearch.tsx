@@ -31,7 +31,6 @@ import * as AirportApi from "@/network/flights/airport";
 import AutocompleteWithApi from "@/components/generic/AutocompleteWithApi";
 import { useDebounce } from "react-use";
 import { fetcher } from "@/util/fetcher";
-import { BASE_URL } from "@/constants/site.constant";
 import { toast } from "react-toastify";
 import * as FlightApi from "@/network/flights/flight";
 import { searchFlightParamsSchema } from "@/util/validation/validation";
@@ -254,7 +253,7 @@ export default function FlightSearch() {
             <div className="w-full cursor-pointer self-stretch">
               {/* FROM AIRPORT */}
               <AutocompleteWithApi<AirportDBItem>
-                fetchUrl={`${BASE_URL}/home/airportbycode/?code=`}
+                fetchUrl={`${process.env.BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setFromAirport(airport);
                 }}
@@ -317,7 +316,7 @@ export default function FlightSearch() {
             <div className="w-full cursor-pointer self-stretch">
               {/* TO AIRPORT */}
               <AutocompleteWithApi<AirportDBItem>
-                fetchUrl={`${BASE_URL}/home/airportbycode/?code=`}
+                fetchUrl={`/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setToAirport(airport);
                 }}
