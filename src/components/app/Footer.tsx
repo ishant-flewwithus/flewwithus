@@ -13,7 +13,7 @@ export default function Footer() {
     { title: "Terms of service", url: "/" },
     { title: "Privacy Settings", url: "/" },
     { title: "Login", url: "/" },
-    { title: "About Us", url: "/" },
+    { title: "About Us", url: "/about" },
     { title: "Flights", url: "/" },
     { title: "Hotels", url: "/" },
     { title: "Car hire", url: "/" },
