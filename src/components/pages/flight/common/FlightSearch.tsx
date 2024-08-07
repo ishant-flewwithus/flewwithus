@@ -9,7 +9,7 @@ import FlightIcon from "@/assets/plane.svg";
 import CabIcon from "@/assets/cabs.svg";
 import HotelIcon from "@/assets/hotels.svg";
 import RoundedButton from "@/components/generic/RoundedButton";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import SwitchButton from "@/assets/switch_button.svg";
 import StudentIcon from "@/assets/student_15399518 1.svg";
@@ -34,7 +34,8 @@ import { fetcher } from "@/util/fetcher";
 import { BASE_URL } from "@/constants/site.constant";
 import { toast } from "react-toastify";
 import * as FlightApi from "@/network/flights/flight";
-
+import { searchFlightParamsSchema } from "@/util/validation/validation";
+import { z } from "zod";
 const navLinks = [
   {
     title: "Flights",
@@ -56,11 +57,11 @@ const navLinks = [
 const flightModes = [
   {
     title: "Round trip",
-    value: "roundtrip",
+    value: "1",
   },
   {
     title: "One way",
-    value: "oneway",
+    value: "2",
   },
 ];
 
@@ -139,8 +140,9 @@ const FlightConfigCounter = ({
 
 export default function FlightSearch() {
   const pathname = usePathname();
+  const router = useRouter();
 
-  const [flightMode, setFlightMode] = useState("roundtrip");
+  const [flightMode, setFlightMode] = useState("1");
 
   const [fromAirport, setFromAirport] = useState<Airport>();
   const [toAirport, setToAirport] = useState<Airport>();
@@ -150,11 +152,15 @@ export default function FlightSearch() {
 
   const [showFlightConfigDialog, setShowFlightConfigDialog] = useState(false);
 
-  const [adultCount, setAdultCount] = useState(0);
+  const [adultCount, setAdultCount] = useState(1);
   const [childrenCount, setChildrenCount] = useState(0);
   const [infantCount, setInfantCount] = useState(0);
 
   const [flightClass, setFlightClass] = useState("Premium Economy");
+
+  const [selectedFlightOffer, setSelectedFlightOffer] = useState<
+    string | undefined
+  >();
 
   const swapAirports = () => {
     let temp = fromAirport;
@@ -163,31 +169,27 @@ export default function FlightSearch() {
   };
 
   const handleFlightSearch = async () => {
-    if (!fromAirport) {
-      toast.error("Please select arrival location");
-    } else if (!toAirport) {
-      toast.error("Please select destination location");
-    } else if (!fromDate) {
-      toast.error("Please select flight date");
-    } else if (!toDate && flightMode === "roundtrip") {
-      toast.error("Please select return date");
-    } else {
-      let data = await FlightApi.searchFlights({
-        AdultCount: adultCount,
-        ChildCount: childrenCount,
-        InfantCount: infantCount,
-        JourneyType: flightMode === "oneway" ? 1 : 2, // TODO
-        // PreferredAirlines: null, // TODO
-        DirectFlight: false, // TODO
-        OneStopFlight: false, // TODO
-        Origin: fromAirport.AIRPORTCODE,
-        Destination: toAirport.AIRPORTCODE,
-        FlightCabinClass: 1, // TODO
+    try {
+      const validatedParams = searchFlightParamsSchema.parse({
+        AdultCount: adultCount.toString(),
+        ChildCount: childrenCount.toString(),
+        InfantCount: infantCount.toString(),
+        JourneyType: flightMode.toString(),
+        Origin: fromAirport?.AIRPORTCODE,
+        Destination: toAirport?.AIRPORTCODE,
         DepartureDate: fromDate,
-        ArrivalTime: toDate,
-        // Sources: null, // TODO
+        ArrivalDate: toDate,
       });
-      console.log("Results: ", data);
+      router.push(
+        `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode === "oneway" ? 1 : 2}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=1&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(toDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}`,
+      );
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        toast.error(err.errors[0].message);
+        console.error("Validation error:", err.errors);
+      } else {
+        console.error("Error:", err);
+      }
     }
   };
 
@@ -200,7 +202,13 @@ export default function FlightSearch() {
             <RoundedButton
               key={index}
               title={item.title}
-              isSelected={pathname === item.navigateUrl}
+              isSelected={
+                "/" +
+                  String(pathname)
+                    .replace(/^\/|\/$/g, "")
+                    .split("/")[0] ===
+                item.navigateUrl
+              } // /flight/search === /flight
               icon={item.icon}
               navigateUrl={item.navigateUrl}
               transparentMode={false}
@@ -211,9 +219,9 @@ export default function FlightSearch() {
 
         <div className="flex items-center justify-between gap-2">
           <div className="hidden text-2xl font-bold lg:block">
-            Millions of cheap flights. One simple search.
+            Gateway To Hassle-Free Booking
           </div>
-          <div className="inline-block rounded-full bg-green-600 px-8 py-2 text-center text-sm font-medium text-white">
+          <div className="inline-block rounded-full bg-green-600 px-8 py-2 text-center text-xs font-medium text-white md:text-sm">
             NO CONVINIENCE FEE, NO PRICE HIKE
           </div>
         </div>
@@ -227,6 +235,7 @@ export default function FlightSearch() {
                 type="radio"
                 value={type.value}
                 checked={type.value === flightMode}
+                readOnly={true}
                 name="flight_mode"
                 className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600 accent-primary-500"
                 onChange={(e) => setFlightMode(e.target.value)}
@@ -244,7 +253,6 @@ export default function FlightSearch() {
           <div className="flex w-full items-center justify-between self-stretch lg:w-[33%]">
             <div className="w-full cursor-pointer self-stretch">
               {/* FROM AIRPORT */}
-
               <AutocompleteWithApi<Airport>
                 fetchUrl={`${BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
@@ -294,7 +302,7 @@ export default function FlightSearch() {
 
             {/* AiRPORT SWAP BUTTON */}
             <div
-              className="m-2 flex items-center justify-center"
+              className="flex w-20 items-center justify-center"
               onClick={() => swapAirports()}
             >
               <Image
@@ -308,7 +316,6 @@ export default function FlightSearch() {
 
             <div className="w-full cursor-pointer self-stretch">
               {/* TO AIRPORT */}
-
               <AutocompleteWithApi<Airport>
                 fetchUrl={`${BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
@@ -378,9 +385,9 @@ export default function FlightSearch() {
               />
             </div>
 
-            <div className="m-2 flex h-10 w-14 items-center justify-center lg:w-0"></div>
+            <div className="flex h-10 w-20 items-center justify-center lg:w-0 p-0 md:p-2"></div>
 
-            {flightMode === "roundtrip" && (
+            {flightMode === "1" && (
               <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
                 <DatePicker
                   value={toDate}
@@ -488,14 +495,23 @@ export default function FlightSearch() {
             {offerOptions.map((item, index) => (
               <div
                 key={index}
-                className="flex cursor-pointer items-center gap-4 rounded-xl border border-gray-300 p-4"
+                className={`flex cursor-pointer items-center gap-4 rounded-xl border ${selectedFlightOffer === item.value ? "border-2 border-primary-600" : "border-gray-300"} p-4`}
+                onClick={() => {
+                  if (selectedFlightOffer === item.value) {
+                    setSelectedFlightOffer(undefined);
+                  } else {
+                    setSelectedFlightOffer(item.value);
+                  }
+                }}
               >
                 <input
                   id={item.value + index}
-                  type="radio"
+                  type="checkbox"
                   value={item.value}
                   name="default-radio"
-                  className="h-4 w-4 border-gray-300 bg-gray-100 text-primary-600"
+                  className="h-4 w-4 accent-primary-500"
+                  checked={selectedFlightOffer === item.value}
+                  readOnly={true}
                 />
                 <Image
                   width={24}

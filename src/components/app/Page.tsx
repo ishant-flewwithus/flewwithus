@@ -45,7 +45,7 @@ export default function Page({
       </div>
       {/* CHILDREN */}
       <div>
-        <Container size="small">
+        <Container>
           <div className={overlapChildrenOverHeader ? "mt-[-80px]" : "mt-0"}>
             <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
               {children}

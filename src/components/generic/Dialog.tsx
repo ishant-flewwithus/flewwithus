@@ -43,7 +43,7 @@ const Dialog: React.FC<DialogProps> = ({ open, setOpen, children, hideCloseButto
   if (!open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black bg-opacity-50">
       <div
         ref={modalRef}
         className="relative w-2/3 rounded-lg overflow-hidden bg-white shadow-lg"
