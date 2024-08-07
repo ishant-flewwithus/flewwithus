@@ -220,7 +220,7 @@ export default function FlightSearch() {
           <div className="hidden text-2xl font-bold lg:block">
             Gateway To Hassle-Free Booking
           </div>
-          <div className="inline-block rounded-full bg-green-600 px-8 py-2 text-center text-xs font-medium text-white md:text-sm">
+          <div className="inline-block rounded-full bg-green-600 px-8 py-2 text-center mx-auto lg:mx-0 text-xs font-medium text-white md:text-sm">
             NO CONVINIENCE FEE, NO PRICE HIKE
           </div>
         </div>
