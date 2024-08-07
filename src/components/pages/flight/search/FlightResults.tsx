@@ -10,8 +10,8 @@ interface FlightResultsProps {
   setShowFiltersOnMobile: React.Dispatch<React.SetStateAction<boolean>>;
   flights: FlightSearchResult[];
   loading: boolean;
-  fromCity: string;
-  toCity: string;
+  fromCity: string | null;
+  toCity: string | null;
 }
 
 export default function FlightResults({
