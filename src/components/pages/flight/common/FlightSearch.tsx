@@ -5,8 +5,8 @@ import FlightIcon from "@/assets/plane.svg";
 import CabIcon from "@/assets/cabs.svg";
 import HotelIcon from "@/assets/hotels.svg";
 import RoundedButton from "@/components/generic/RoundedButton";
-import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import SwitchButton from "@/assets/switch_button.svg";
 import StudentIcon from "@/assets/student_15399518 1.svg";
 import SeniorCitizenIcon from "@/assets/grandfather_522280 1.svg";
@@ -17,12 +17,17 @@ import Box from "@/components/generic/Box";
 import { MdFlightTakeoff } from "react-icons/md";
 import { AirportDBItem } from "@/models/Flight";
 import DatePicker from "@/components/generic/DatePicker";
-import { addDays, format, getDate } from "date-fns";
+import { addDays, format, getDate, isValid, parseISO } from "date-fns";
 import { GrAdd, GrSubtract } from "react-icons/gr";
 import Popover from "@/components/generic/Popover";
 import AutocompleteWithApi from "@/components/generic/AutocompleteWithApi";
 import { toast } from "react-toastify";
-import { validateFlightSearchParams } from "@/util/validation/validateFlight";
+import {
+  isAirportDBItem,
+  validateFlightSearchParams,
+} from "@/util/validation/validateFlight";
+import CircularProgressBar from "@/components/generic/CircularProgress";
+import { isValidJSON } from "@/util/validation/validateString";
 
 const navLinks = [
   {
@@ -98,6 +103,7 @@ const flightClassOptions = [
 export default function FlightSearch() {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [flightMode, setFlightMode] = useState("1");
 
@@ -115,6 +121,8 @@ export default function FlightSearch() {
 
   const [flightClass, setFlightClass] = useState(flightClassOptions[0]);
 
+  const [searching, setSearching] = useState(false);
+
   const [selectedFlightOffer, setSelectedFlightOffer] = useState<
     string | undefined
   >();
@@ -127,6 +135,7 @@ export default function FlightSearch() {
 
   const handleFlightSearch = async () => {
     try {
+      setSearching(true);
       validateFlightSearchParams({
         AdultCount: adultCount.toString(),
         ChildCount: childrenCount.toString(),
@@ -145,12 +154,12 @@ export default function FlightSearch() {
       if (flightMode === "1") {
         // One way trip
         router.push(
-          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}`,
+          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}&FromAirport=${JSON.stringify(fromAirport)}&ToAirport=${JSON.stringify(toAirport)}`,
         );
       } else if (flightMode === "2") {
         // Return trip
         router.push(
-          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}&ReturnArrivalDate=${toDate}&ReturnDepartureDate=${toDate}&ReturnFlightCabinClass=${flightClass.value}`,
+          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}&ReturnArrivalDate=${toDate}&ReturnDepartureDate=${toDate}&ReturnFlightCabinClass=${flightClass.value}&FromAirport=${JSON.stringify(fromAirport)}&ToAirport=${JSON.stringify(toAirport)}`,
         );
       } else {
         throw new Error("Invalid journey type");
@@ -159,8 +168,71 @@ export default function FlightSearch() {
       toast.error(
         err instanceof Error ? err.message : "An unexpected error occurred",
       );
+    } finally {
+      setSearching(false);
     }
   };
+
+  const setupDefaultFaluesFromSearchParams = () => {
+    const params = {
+      AdultCount: searchParams.get("AdultCount") || "0",
+      ChildCount: searchParams.get("ChildCount") || "0",
+      InfantCount: searchParams.get("InfantCount") || "0",
+      JourneyType: searchParams.get("JourneyType") || "0",
+      Origin: searchParams.get("Origin") || "",
+      Destination: searchParams.get("Destination") || "",
+      DepartureDate: searchParams.get("DepartureDate") || "",
+      ArrivalDate: searchParams.get("ArrivalDate") || "",
+      FromCity: searchParams.get("FromCity") || "",
+      ToCity: searchParams.get("ToCity") || "",
+      FlightCabinClass: searchParams.get("FlightCabinClass") || "1",
+      ReturnDepartureDate: searchParams.get("ReturnDepartureDate") || "1",
+      ReturnArrivalDate: searchParams.get("ReturnArrivalDate") || "1",
+      FromAirport: searchParams.get("FromAirport") || "{}",
+      ToAirport: searchParams.get("ToAirport") || "{}",
+    };
+    setAdultCount(parseInt(params.AdultCount) || 1);
+    setChildrenCount(parseInt(params.ChildCount) || 0);
+    setInfantCount(parseInt(params.InfantCount) || 0);
+    setFlightMode(params.JourneyType || "1");
+
+    let _fromAirport = params.FromAirport;
+    let _isFromAirportAValidJSON = isValidJSON(_fromAirport);
+    let _isFromAirportAAirportDBItem = isAirportDBItem(
+      _isFromAirportAValidJSON,
+    );
+
+    setFromAirport(
+      _isFromAirportAAirportDBItem ? JSON.parse(params.FromAirport) : undefined,
+    );
+
+    let _toAirport = params.ToAirport;
+    let _isToAirportAValidJSON = isValidJSON(_toAirport);
+    let _isToAirportAAirportDBItem = isAirportDBItem(_isToAirportAValidJSON);
+
+    setToAirport(
+      _isToAirportAAirportDBItem ? JSON.parse(params.ToAirport) : undefined,
+    );
+
+    setFromDate(
+      isValid(parseISO(params.ArrivalDate))
+        ? parseISO(params.ArrivalDate)
+        : new Date(),
+    );
+    setToDate(
+      isValid(parseISO(params.ReturnArrivalDate))
+        ? parseISO(params.ReturnArrivalDate)
+        : addDays(new Date(), 7),
+    );
+    setFlightClass(
+      flightClassOptions.find((f) => String(f.value) === params.JourneyType) ||
+        flightClassOptions[0],
+    );
+  };
+
+  useEffect(() => {
+    setupDefaultFaluesFromSearchParams();
+  }, [searchParams]);
 
   return (
     <Box>
@@ -451,8 +523,13 @@ export default function FlightSearch() {
           <button
             onClick={() => handleFlightSearch()}
             className="flex w-full cursor-pointer items-center justify-center self-stretch rounded-full border border-primary-500 bg-primary-500 p-4 text-onprimary hover:bg-primary-600 lg:w-[10%] lg:rounded-xl"
+            disabled={searching}
           >
-            Search
+            {searching ? (
+              <CircularProgressBar width={2} height={2} />
+            ) : (
+              "Search"
+            )}
           </button>
         </div>
 
