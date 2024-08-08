@@ -52,7 +52,7 @@ export default function FlightSearchPage() {
   const [maxPriceFilter, setMaxPriceFilter] = useState(10000);
   const [airlineFilters, setAirlineFilters] = useState<AirlineFilter[]>([]);
 
-  // Get flights from TBO API
+  // Get flights
   const params = {
     AdultCount: searchParams.get("AdultCount") || "0",
     ChildCount: searchParams.get("ChildCount") || "0",
@@ -69,6 +69,8 @@ export default function FlightSearchPage() {
 
   const searchFlights = async () => {
     try {
+      setData([]);
+      setFilteredData([]);
       setLoading(true);
 
       // Validate params and throw error if validation fails
@@ -135,7 +137,7 @@ export default function FlightSearchPage() {
       searchFlights();
     },
     800,
-    [filters],
+    [filters, searchParams],
   );
 
   useDebounce(

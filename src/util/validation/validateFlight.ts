@@ -1,4 +1,4 @@
-import { FlightSearchParams } from "@/models/Flight";
+import { AirportDBItem, FlightSearchParams } from "@/models/Flight";
 import { isValid, parseISO, isBefore, subDays } from "date-fns";
 
 export function validateFlightSearchParams(params: FlightSearchParams): void {
@@ -46,4 +46,17 @@ export function validateFlightSearchParams(params: FlightSearchParams): void {
   if (errMsg) {
     throw new Error(errMsg);
   }
+}
+
+export function isAirportDBItem(obj: any) {
+  return (
+    obj !== null &&
+    obj.AIRPORTCODE !== null &&
+    obj.AIRPORTNAME !== null &&
+    obj.TERMINAL !== null &&
+    obj.CITYCODE !== null &&
+    obj.CITYNAME !== null &&
+    obj.COUNTRYCODE !== null &&
+    obj.COUNTRYNAME !== null
+  );
 }
