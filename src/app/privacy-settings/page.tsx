@@ -1,12 +1,10 @@
-
 import Page from "@/components/app/Page";
-import Image from "next/image";
 
 export default function page() {
   return (
     <Page headerChild={
       <div className="text-center text-5xl text-onprimary my-10 font-bold ">
-        Privacy Policy
+        Privacy <span className="font-light">Settings</span>
       </div>
     } overlapChildrenOverHeader={true}>
         <div className="flex justify-center mt-24">
