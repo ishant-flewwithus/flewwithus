@@ -11,7 +11,7 @@ export default function Footer() {
     { title: "Help", url: "/" },
     { title: "Privacy Policy", url: "/" },
     { title: "Terms of service", url: "/" },
-    { title: "Privacy Settings", url: "/" },
+    { title: "Privacy Settings", url: "/privacy-settings" },
     { title: "Login", url: "/" },
     { title: "About Us", url: "/about" },
     { title: "Flights", url: "/" },
