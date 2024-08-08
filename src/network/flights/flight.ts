@@ -8,15 +8,11 @@ interface FlightSearchBody {
   ChildCount?: number;
   InfantCount?: number;
   JourneyType?: number;
-  //PreferredAirlines: null;
-  DirectFlight?: boolean;
-  OneStopFlight?: boolean;
   Origin?: string;
   Destination?: string;
   FlightCabinClass?: number;
   DepartureDate?: Date;
   ArrivalDate?: Date;
-  //Sources?: null;
 }
 
 export const searchFlights = async ({
@@ -24,15 +20,13 @@ export const searchFlights = async ({
   ChildCount,
   InfantCount,
   JourneyType,
-  DirectFlight,
-  OneStopFlight,
   Origin,
   Destination,
   FlightCabinClass,
   DepartureDate,
   ArrivalDate,
 }: FlightSearchBody) => {
-  let queryParams = `?AdultCount=${AdultCount}&ChildCount=${ChildCount}&InfantCount=${InfantCount}&JourneyType=1&DirectFlight=${DirectFlight}&OneStopFlight=${OneStopFlight}&Origin=${Origin}&Destination=${Destination}&FlightCabinClass=${FlightCabinClass}&DepartureDate=${format(DepartureDate!, "yyyy-MM-dd")}&ArrivalDate=${format(ArrivalDate!, "yyyy-MM-dd")}`;
+  let queryParams = `?AdultCount=${AdultCount}&ChildCount=${ChildCount}&InfantCount=${InfantCount}&JourneyType=${JourneyType}&Origin=${Origin}&Destination=${Destination}&FlightCabinClass=${FlightCabinClass}&DepartureDate=${format(DepartureDate!, "yyyy-MM-dd")}&ArrivalDate=${format(ArrivalDate!, "yyyy-MM-dd")}`;
 
   const response = await Api.get<ApiResponse<FlightSearchResult[]>>(
     `/home/searchFlights${queryParams}`,

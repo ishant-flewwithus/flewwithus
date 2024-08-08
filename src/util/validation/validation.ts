@@ -32,6 +32,11 @@ export const searchFlightParamsSchema = z
     ArrivalDate: z.date().refine((val) => isValid(val), {
       message: "Invalid arrival date",
     }),
+    FlightCabinClass: z
+      .number()
+      .refine((val) => [1, 2, 3].includes(val), {
+        message: "Invalid flight class type",
+      }),
   })
   .refine(
     (data) => {

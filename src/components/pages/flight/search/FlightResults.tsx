@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { IoFilterOutline } from "react-icons/io5";
+import { MdFlightTakeoff } from "react-icons/md";
 
 interface FlightResultsProps {
   setShowFiltersOnMobile: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,17 +31,14 @@ export default function FlightResults({
         </div>
         <div>
           <div
-            className="flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full bg-onprimary p-4 shadow-lg xl:hidden"
+            className="flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full bg-onprimary p-3 shadow-md xl:hidden"
             onClick={() => setShowFiltersOnMobile(true)}
           >
-            <div>
-              <IoFilterOutline />
-            </div>
-            <div className="text-xs">Filter</div>
+            <IoFilterOutline size={40} />
           </div>
         </div>
       </div>
-      <div className="mt-4 overflow-y-auto scrollbar-thin xl:h-[130vh]">
+      <div className="mt-4 overflow-y-auto scrollbar-thin xl:h-[150vh]">
         {loading ? (
           <div className="my-4 flex w-full items-center justify-center">
             <div role="status">
@@ -71,12 +69,9 @@ export default function FlightResults({
                 <div className="mt-4 hidden rounded-md bg-onprimary p-6 shadow-sm lg:grid lg:grid-cols-12 lg:gap-6">
                   <div className="col-span-2 flex gap-4">
                     <div className="flex items-center">
-                      <Image
-                        src="/indigo_logo.png"
-                        width={50}
-                        height={50}
-                        alt="indigo"
-                      />
+                      <div className="w-50 h-50 rounded-xl bg-primary-500 p-2 text-white">
+                        <MdFlightTakeoff size={30} />
+                      </div>
                     </div>
                     <div>
                       <div className="text-xl font-semibold">
@@ -112,10 +107,10 @@ export default function FlightResults({
                   </div>
 
                   <div className="col-span-2">
-                    <div className="border-b-4 border-b-primary-500 pb-2 text-center text-xs">
+                    <div className="border-b-4 border-b-primary-500 pb-2 text-center text-sm">
                       {formatMinutes(item.Segments[0][0].Duration)}
                     </div>
-                    <div className="pt-2 text-center text-xs">Non-Stop</div>
+                    <div className="pt-2 text-center text-sm">Non-Stop</div>
                   </div>
 
                   <div className="col-span-2">
@@ -139,26 +134,31 @@ export default function FlightResults({
                   <div className="text-center text-sm font-medium">
                     {item.Segments[0][0].Airline.FlightNumber}
                   </div>
-                  <div className="mt-6 flex items-center justify-between text-center">
-                    <div>
+                  <div className="mt-6 grid grid-cols-12 gap-4 text-center">
+                    <div className="col-span-4">
                       <div className="text-lg font-bold">
-                        {item.Segments[0][0].Origin.DepTime}
+                        {format(item.Segments[0][0].Origin.DepTime, "hh:mm aa")}
                       </div>
-                      <div className="font-medium">
+                      <div className="text-sm">
+                        {item.Segments[0][0].Origin.Airport.AirportName}{" "}
+                        {item.Segments[0][0].Origin.Airport.CityName}{" "}
                         {item.Segments[0][0].Origin.Airport.CountryName}
                       </div>
                     </div>
-                    <div>
+                    <div className="col-span-4">
                       <div className="border-b-2 border-b-green-500 pb-1 text-sm font-bold">
                         {formatMinutes(item.Segments[0][0].Duration)}
                       </div>
                       <div className="pt-2 text-xs font-medium">1 STOP</div>
                     </div>
-                    <div>
+                    <div className="col-span-4">
                       <div className="text-lg font-bold">
-                        {item.Segments[0][0].Destination.ArrTime}
+                        {format(
+                          item.Segments[0][0].Destination.ArrTime,
+                          "hh:mm aa",
+                        )}
                       </div>
-                      <div className="font-medium">
+                      <div className="text-sm">
                         {" "}
                         {
                           item.Segments[0][0].Destination.Airport.AirportName
@@ -168,14 +168,14 @@ export default function FlightResults({
                       </div>
                     </div>
                   </div>
-                  <div className="mt-4 grid cursor-pointer grid-cols-3 rounded-full bg-primary-500 px-4 py-2 text-onprimary">
-                    <div className="text-start font-semibold line-through opacity-65">
+                  <div className="mt-4 grid cursor-pointer grid-cols-12 rounded-full bg-primary-500 px-4 py-2 text-onprimary">
+                    <div className="col-span-4 text-start font-semibold line-through opacity-65">
                       {item?.Fare?.Currency} {item?.Fare?.OfferedFare}
                     </div>
-                    <div className="text-end font-semibold">
+                    <div className="col-span-4 text-end font-semibold">
                       {item?.Fare?.Currency} {item?.Fare?.OfferedFare}
                     </div>
-                    <div className="flex items-center justify-end">
+                    <div className="col-span-4 flex items-center justify-end">
                       <FaArrowRightLong size={20} />
                     </div>
                   </div>

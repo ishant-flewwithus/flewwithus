@@ -187,3 +187,14 @@ export interface AirportDBItem {
   COUNTRYCODE: string;
   COUNTRYNAME: string;
 }
+
+export interface FlightFilter {
+  id: string;
+  title: string;
+  value: boolean;
+}
+
+export interface AirlineFilter {
+  airline: Airline;
+  isSelected: boolean;
+}

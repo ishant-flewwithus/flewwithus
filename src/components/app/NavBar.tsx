@@ -178,10 +178,11 @@ export default function NavBar() {
       >
         <div className="relative w-full">
           {/* BACKGROUND IMAGE */}
-          <img
-            src="https://cdn.pixabay.com/photo/2023/10/27/15/51/italy-8345688_1280.jpg"
+          <Image
+            src="/auth_bg.webp"
             alt="auth image 1"
             className="absolute inset-0 h-full w-full object-cover"
+            fill={true}
           />
           <div className="absolute inset-0 bg-black opacity-40"></div>
           <div className="relative z-10 mx-4 bg-opacity-50 p-6">
