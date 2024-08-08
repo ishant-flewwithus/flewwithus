@@ -15,9 +15,12 @@ export default function FormInputCheckbox({
       <div className="flex items-center bg-green-300">
         <CheckBox {...props} />
       </div>
-      <div className="flex flex-1 items-center text-base font-medium">
+      <label
+        htmlFor={label}
+        className="flex flex-1 items-center text-base font-medium"
+      >
         {label}
-      </div>
+      </label>
     </div>
   );
 }

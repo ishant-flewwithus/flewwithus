@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/constants/site.constant";
 import axios from "axios";
 class HttpError extends Error {
   constructor(message?: string) {
@@ -33,7 +32,7 @@ export class ConflictError extends HttpError {}
 export class TooManyRequestsError extends HttpError {}
 
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   // timeout: 5000, // Abort req if no response in specified time
   //withCredentials: true,
 });

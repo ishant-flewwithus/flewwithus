@@ -1,9 +1,5 @@
 "use client";
 import Image from "next/image";
-import PlaneSvg from "@/assets/plane.svg";
-import { ReactNode, SVGProps, useEffect, useRef } from "react";
-import Link from "next/link";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Stack from "@/components/generic/Stack";
 import FlightIcon from "@/assets/plane.svg";
 import CabIcon from "@/assets/cabs.svg";
@@ -18,23 +14,16 @@ import ArmedForcesIcon from "@/assets/user-pilot-tie_9585967 1.svg";
 import DoctorIcon from "@/assets/user-md_9856850 1.svg";
 import { DEFAULT_CONTENT_GAP } from "@/constants/style.constant";
 import Box from "@/components/generic/Box";
-import { LuSearch } from "react-icons/lu";
 import { MdFlightTakeoff } from "react-icons/md";
-import { Airport, AirportDBItem } from "@/models/Flight";
+import { AirportDBItem } from "@/models/Flight";
 import DatePicker from "@/components/generic/DatePicker";
 import { addDays, format, getDate } from "date-fns";
 import { GrAdd, GrSubtract } from "react-icons/gr";
 import Popover from "@/components/generic/Popover";
-import Autocomplete from "@/components/generic/Autocomplete";
-import useSWR from "swr";
-import * as AirportApi from "@/network/flights/airport";
 import AutocompleteWithApi from "@/components/generic/AutocompleteWithApi";
-import { useDebounce } from "react-use";
-import { fetcher } from "@/util/fetcher";
 import { toast } from "react-toastify";
-import * as FlightApi from "@/network/flights/flight";
-import { searchFlightParamsSchema } from "@/util/validation/validation";
-import { z } from "zod";
+import { validateFlightSearchParams } from "@/util/validation/validateFlight";
+
 const navLinks = [
   {
     title: "Flights",
@@ -55,11 +44,11 @@ const navLinks = [
 
 const flightModes = [
   {
-    title: "Round trip",
+    title: "One way",
     value: "1",
   },
   {
-    title: "One way",
+    title: "Round trip",
     value: "2",
   },
 ];
@@ -91,51 +80,20 @@ const offerOptions = [
   },
 ];
 
-const flightClassOptions = ["Economy", "Premium Economy", "Business"];
-
-interface FlightConfigCounterProps {
-  title: string;
-  count: number;
-  setCount: React.Dispatch<React.SetStateAction<number>>;
-}
-
-const FlightConfigCounter = ({
-  title,
-  count,
-  setCount,
-}: FlightConfigCounterProps) => {
-  return (
-    <div className="col-span-12 select-none rounded-md border border-gray-300 px-6 py-2 md:col-span-4">
-      <div className="my-1 text-center text-base font-semibold">{title}</div>
-      <div className="border-b-2 pb-2 text-center text-xs font-semibold">
-        On the day of travel
-      </div>
-      <div className="mt-2 flex items-center justify-around">
-        <div
-          className="cursor-pointer p-2"
-          onClick={() => {
-            if (count > 0) {
-              setCount(count - 1);
-            }
-          }}
-        >
-          <GrSubtract size={13} />
-        </div>
-        <div className="text-2xl font-medium">{count}</div>
-        <div
-          className="cursor-pointer p-2"
-          onClick={() => {
-            if (count < 9) {
-              setCount(count + 1);
-            }
-          }}
-        >
-          <GrAdd size={13} />
-        </div>
-      </div>
-    </div>
-  );
-};
+const flightClassOptions = [
+  {
+    title: "Economy",
+    value: 1,
+  },
+  {
+    title: "Premium Economy",
+    value: 2,
+  },
+  {
+    title: "Business",
+    value: 3,
+  },
+];
 
 export default function FlightSearch() {
   const pathname = usePathname();
@@ -155,7 +113,7 @@ export default function FlightSearch() {
   const [childrenCount, setChildrenCount] = useState(0);
   const [infantCount, setInfantCount] = useState(0);
 
-  const [flightClass, setFlightClass] = useState("Premium Economy");
+  const [flightClass, setFlightClass] = useState(flightClassOptions[0]);
 
   const [selectedFlightOffer, setSelectedFlightOffer] = useState<
     string | undefined
@@ -169,26 +127,38 @@ export default function FlightSearch() {
 
   const handleFlightSearch = async () => {
     try {
-      const validatedParams = searchFlightParamsSchema.parse({
+      validateFlightSearchParams({
         AdultCount: adultCount.toString(),
         ChildCount: childrenCount.toString(),
         InfantCount: infantCount.toString(),
         JourneyType: flightMode.toString(),
-        Origin: fromAirport?.AIRPORTCODE,
-        Destination: toAirport?.AIRPORTCODE,
-        DepartureDate: fromDate,
-        ArrivalDate: toDate,
+        Origin: fromAirport?.AIRPORTCODE || "",
+        Destination: toAirport?.AIRPORTCODE || "",
+        DepartureDate: fromDate.toISOString(),
+        ArrivalDate: toDate.toISOString(),
+        FlightCabinClass: flightClass.value.toString(),
+        FromCity: fromAirport?.CITYNAME || "",
+        ToCity: toAirport?.CITYNAME || "",
       });
-      router.push(
-        `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode === "oneway" ? 1 : 2}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=1&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(toDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}`,
-      );
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        toast.error(err.errors[0].message);
-        console.error("Validation error:", err.errors);
+
+      // In TBO API, fromDate = departureDate and arrivalDate; and toDate = returnDepartureDate and returnArrivalDate
+      if (flightMode === "1") {
+        // One way trip
+        router.push(
+          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}`,
+        );
+      } else if (flightMode === "2") {
+        // Return trip
+        router.push(
+          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}&ReturnArrivalDate=${toDate}&ReturnDepartureDate=${toDate}&ReturnFlightCabinClass=${flightClass.value}`,
+        );
       } else {
-        console.error("Error:", err);
+        throw new Error("Invalid journey type");
       }
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
     }
   };
 
@@ -220,7 +190,7 @@ export default function FlightSearch() {
           <div className="hidden text-2xl font-bold lg:block">
             Gateway To Hassle-Free Booking
           </div>
-          <div className="inline-block rounded-full bg-green-600 px-8 py-2 text-center text-xs font-medium text-white md:text-sm">
+          <div className="mx-auto inline-block rounded-full bg-green-600 px-8 py-2 text-center text-xs font-medium text-white md:text-sm lg:mx-0">
             NO CONVINIENCE FEE, NO PRICE HIKE
           </div>
         </div>
@@ -253,7 +223,7 @@ export default function FlightSearch() {
             <div className="w-full cursor-pointer self-stretch">
               {/* FROM AIRPORT */}
               <AutocompleteWithApi<AirportDBItem>
-                fetchUrl={`${process.env.BASE_URL}/home/airportbycode/?code=`}
+                fetchUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setFromAirport(airport);
                 }}
@@ -264,16 +234,16 @@ export default function FlightSearch() {
                       <div className="rounded-xl border border-gray-300 p-4">
                         <div className="text-sm font-medium">From</div>
                         <div className="mt-2 line-clamp-1 text-lg font-bold">
-                          {selectedItem?.CITYNAME || "Select"}
+                          {fromAirport?.CITYNAME || "Select"}
                         </div>
 
                         <div className="line-clamp-2 h-[2rem] text-xs font-light text-textbody">
-                          {selectedItem
-                            ? selectedItem.AIRPORTNAME +
+                          {fromAirport
+                            ? fromAirport?.AIRPORTNAME +
                               " , " +
-                              selectedItem.CITYNAME +
+                              fromAirport?.CITYNAME +
                               " , " +
-                              selectedItem.COUNTRYNAME
+                              fromAirport?.COUNTRYNAME
                             : "Airport"}
                         </div>
                       </div>
@@ -316,7 +286,7 @@ export default function FlightSearch() {
             <div className="w-full cursor-pointer self-stretch">
               {/* TO AIRPORT */}
               <AutocompleteWithApi<AirportDBItem>
-                fetchUrl={`/home/airportbycode/?code=`}
+                fetchUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setToAirport(airport);
                 }}
@@ -327,16 +297,16 @@ export default function FlightSearch() {
                       <div className="rounded-xl border border-gray-300 p-4">
                         <div className="text-sm font-medium">To</div>
                         <div className="mt-2 line-clamp-1 text-lg font-bold">
-                          {selectedItem?.CITYNAME || "Select"}
+                          {toAirport?.CITYNAME || "Select"}
                         </div>
 
                         <div className="line-clamp-2 h-[2rem] text-xs font-light text-textbody">
-                          {selectedItem
-                            ? selectedItem.AIRPORTNAME +
+                          {toAirport
+                            ? toAirport?.AIRPORTNAME +
                               " , " +
-                              selectedItem.CITYNAME +
+                              toAirport?.CITYNAME +
                               " , " +
-                              selectedItem.COUNTRYNAME
+                              toAirport?.COUNTRYNAME
                             : "Airport"}
                         </div>
                       </div>
@@ -384,9 +354,11 @@ export default function FlightSearch() {
               />
             </div>
 
-            <div className="flex h-10 w-20 items-center justify-center lg:w-0 p-0 md:p-2"></div>
+            {flightMode === "2" && (
+              <div className="flex h-10 w-20 items-center justify-center p-0 md:p-2 lg:w-0"></div>
+            )}
 
-            {flightMode === "1" && (
+            {flightMode === "2" && (
               <div className="w-full cursor-pointer self-stretch rounded-xl border border-gray-300 p-4">
                 <DatePicker
                   value={toDate}
@@ -417,7 +389,7 @@ export default function FlightSearch() {
                   </div>
                   <div className="mt-2 line-clamp-1 text-lg font-bold"></div>
                   <div className="text-xs font-light text-textbody">
-                    1 Adult, Economy
+                    {`${adultCount} Adults, ${childrenCount} Children, ${infantCount} Infants, ${flightClass.title}`}
                   </div>
                 </div>
               }
@@ -449,10 +421,10 @@ export default function FlightSearch() {
                           {flightClassOptions?.map((item, index) => (
                             <div
                               key={index}
-                              className={`${index == 2 ? "col-span-12" : "col-span-6"} flex cursor-pointer items-center justify-center rounded-full p-3 text-center text-xs ${flightClass === item ? "bg-primary-500 text-onprimary hover:bg-primary-500" : "bg-gray-200"} text-center`}
+                              className={`${index == 2 ? "col-span-12" : "col-span-6"} flex cursor-pointer items-center justify-center rounded-full p-3 text-center text-xs ${flightClass.value === item.value ? "bg-primary-500 text-onprimary hover:bg-primary-500" : "bg-gray-200"} text-center`}
                               onClick={() => setFlightClass(item)}
                             >
-                              {item}
+                              {item.title}
                             </div>
                           ))}
                         </div>
@@ -530,3 +502,47 @@ export default function FlightSearch() {
     </Box>
   );
 }
+
+interface FlightConfigCounterProps {
+  title: string;
+  count: number;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const FlightConfigCounter = ({
+  title,
+  count,
+  setCount,
+}: FlightConfigCounterProps) => {
+  return (
+    <div className="col-span-12 select-none rounded-md border border-gray-300 px-6 py-2 md:col-span-4">
+      <div className="my-1 text-center text-base font-semibold">{title}</div>
+      <div className="border-b-2 pb-2 text-center text-xs font-semibold">
+        On the day of travel
+      </div>
+      <div className="mt-2 flex items-center justify-around">
+        <div
+          className="cursor-pointer p-2"
+          onClick={() => {
+            if (count > 0) {
+              setCount(count - 1);
+            }
+          }}
+        >
+          <GrSubtract size={13} />
+        </div>
+        <div className="text-2xl font-medium">{count}</div>
+        <div
+          className="cursor-pointer p-2"
+          onClick={() => {
+            if (count < 9) {
+              setCount(count + 1);
+            }
+          }}
+        >
+          <GrAdd size={13} />
+        </div>
+      </div>
+    </div>
+  );
+};

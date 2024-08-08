@@ -4,19 +4,15 @@ import Api from "@/util/Api";
 import { format } from "date-fns";
 
 interface FlightSearchBody {
-  AdultCount?: number;
-  ChildCount?: number;
-  InfantCount?: number;
-  JourneyType?: number;
-  //PreferredAirlines: null;
-  DirectFlight?: boolean;
-  OneStopFlight?: boolean;
+  AdultCount?: string;
+  ChildCount?: string;
+  InfantCount?: string;
+  JourneyType?: string;
   Origin?: string;
   Destination?: string;
-  FlightCabinClass?: number;
+  FlightCabinClass?: string;
   DepartureDate?: Date;
   ArrivalDate?: Date;
-  //Sources?: null;
 }
 
 export const searchFlights = async ({
@@ -24,16 +20,18 @@ export const searchFlights = async ({
   ChildCount,
   InfantCount,
   JourneyType,
-  DirectFlight,
-  OneStopFlight,
   Origin,
   Destination,
   FlightCabinClass,
   DepartureDate,
   ArrivalDate,
 }: FlightSearchBody) => {
-  let queryParams = `?AdultCount=${AdultCount}&ChildCount=${ChildCount}&InfantCount=${InfantCount}&JourneyType=1&DirectFlight=${DirectFlight}&OneStopFlight=${OneStopFlight}&Origin=${Origin}&Destination=${Destination}&FlightCabinClass=${FlightCabinClass}&DepartureDate=${format(DepartureDate!, "yyyy-MM-dd")}&ArrivalDate=${format(ArrivalDate!, "yyyy-MM-dd")}`;
-
+  let queryParams;
+  if (JourneyType === "1") {
+    queryParams = `?AdultCount=${AdultCount}&ChildCount=${ChildCount}&InfantCount=${InfantCount}&JourneyType=${JourneyType}&Origin=${Origin}&Destination=${Destination}&FlightCabinClass=${FlightCabinClass}&DepartureDate=${format(DepartureDate!, "yyyy-MM-dd")}&ArrivalDate=${format(DepartureDate!, "yyyy-MM-dd")}`;
+  } else {
+    queryParams = `?AdultCount=${AdultCount}&ChildCount=${ChildCount}&InfantCount=${InfantCount}&JourneyType=${JourneyType}&Origin=${Origin}&Destination=${Destination}&FlightCabinClass=${FlightCabinClass}&DepartureDate=${format(DepartureDate!, "yyyy-MM-dd")}&ArrivalDate=${format(DepartureDate!, "yyyy-MM-dd")}&ReturnArrivalDate=${format(ArrivalDate!, "yyyy-MM-dd")}&ReturnDepartureDate=${format(ArrivalDate!, "yyyy-MM-dd")}&ReturnFlightCabinClass=${FlightCabinClass}`;
+  }
   const response = await Api.get<ApiResponse<FlightSearchResult[]>>(
     `/home/searchFlights${queryParams}`,
   );
