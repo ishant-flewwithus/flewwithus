@@ -31,7 +31,7 @@ export default function FlightResults({
         </div>
         <div>
           <div
-            className="flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full bg-onprimary p-3 shadow-md xl:hidden"
+            className="flex h-12 w-12 cursor-pointer flex-col items-center justify-center rounded-full bg-onprimary p-3 shadow-sm xl:hidden"
             onClick={() => setShowFiltersOnMobile(true)}
           >
             <IoFilterOutline size={40} />

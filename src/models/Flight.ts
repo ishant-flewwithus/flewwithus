@@ -198,3 +198,17 @@ export interface AirlineFilter {
   airline: Airline;
   isSelected: boolean;
 }
+
+export interface FlightSearchParams {
+  AdultCount: string;
+  ChildCount: string;
+  InfantCount: string;
+  JourneyType: string;
+  Origin: string;
+  Destination: string;
+  DepartureDate: string;
+  ArrivalDate?: string;
+  FromCity: string;
+  ToCity: string;
+  FlightCabinClass: string;
+}

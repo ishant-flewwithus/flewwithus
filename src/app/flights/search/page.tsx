@@ -9,12 +9,12 @@ import {
   isAfter,
   startOfDay,
   isBefore,
+  subDays,
 } from "date-fns";
 import * as FlightApi from "@/network/flights/flight";
 import { useSearchParams } from "next/navigation";
 import Filters from "@/components/pages/flight/search/Filters";
 import FlightResults from "@/components/pages/flight/search/FlightResults";
-import { searchFlightParamsSchema } from "@/util/validation/validation";
 import { z } from "zod";
 import { toast } from "react-toastify";
 import {
@@ -24,31 +24,17 @@ import {
 } from "@/models/Flight";
 import { useDebounce } from "react-use";
 import { roundUpToNearest500 } from "@/util/math";
+import { validateFlightSearchParams } from "@/util/validation/validateFlight";
 
 export default function FlightSearchPage() {
-  const [showFiltersOnMobile, setShowFiltersOnMobile] = useState(false);
-
   const searchParams = useSearchParams();
-  const params = {
-    AdultCount: searchParams.get("AdultCount") || "0",
-    ChildCount: searchParams.get("ChildCount") || "0",
-    InfantCount: searchParams.get("InfantCount") || "0",
-    JourneyType: searchParams.get("JourneyType") || "0",
-    Origin: searchParams.get("Origin") || "",
-    Destination: searchParams.get("Destination") || "",
-    DepartureDate: parseISO(searchParams.get("DepartureDate") || ""),
-    ArrivalDate: parseISO(searchParams.get("ArrivalDate") || ""),
-    FromCity: searchParams.get("FromCity"),
-    ToCity: searchParams.get("ToCity"),
-    FlightCabinClass: searchParams.get("FlightCabinClass")
-      ? parseInt(searchParams.get("FlightCabinClass") || "1")
-      : 1,
-  };
 
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<FlightSearchResult[]>([]);
-  const [filteredData, setFilteredData] = useState<FlightSearchResult[]>([]);
+  const [data, setData] = useState<FlightSearchResult[]>([]); // All results
+  const [filteredData, setFilteredData] = useState<FlightSearchResult[]>([]); // Frontend filtered results
+  const [showFiltersOnMobile, setShowFiltersOnMobile] = useState(false);
 
+  // Filters
   const [filters, setFilters] = useState<FlightFilter[]>([
     {
       title: "Direct Flight",
@@ -66,10 +52,55 @@ export default function FlightSearchPage() {
   const [maxPriceFilter, setMaxPriceFilter] = useState(10000);
   const [airlineFilters, setAirlineFilters] = useState<AirlineFilter[]>([]);
 
-  // Setup filters
-  useEffect(() => {
-    // Since prices are sorted by default in price asc order
+  // Get flights from TBO API
+  const params = {
+    AdultCount: searchParams.get("AdultCount") || "0",
+    ChildCount: searchParams.get("ChildCount") || "0",
+    InfantCount: searchParams.get("InfantCount") || "0",
+    JourneyType: searchParams.get("JourneyType") || "0",
+    Origin: searchParams.get("Origin") || "",
+    Destination: searchParams.get("Destination") || "",
+    DepartureDate: searchParams.get("DepartureDate") || "",
+    ArrivalDate: searchParams.get("ArrivalDate") || "",
+    FromCity: searchParams.get("FromCity") || "",
+    ToCity: searchParams.get("ToCity") || "",
+    FlightCabinClass: searchParams.get("FlightCabinClass") || "1",
+  };
+
+  const searchFlights = async () => {
+    try {
+      setLoading(true);
+
+      // Validate params and throw error if validation fails
+      validateFlightSearchParams(params);
+
+      const results = await FlightApi.searchFlights({
+        AdultCount: params.AdultCount,
+        ChildCount: params.ChildCount,
+        InfantCount: params.InfantCount,
+        JourneyType: params.JourneyType,
+        Origin: params.Origin,
+        Destination: params.Destination,
+        DepartureDate: parseISO(params.DepartureDate),
+        ArrivalDate: parseISO(params.ArrivalDate),
+        FlightCabinClass: params.FlightCabinClass,
+      });
+
+      console.log("Flight Results:", results);
+      setData(results || []);
+      setFilteredData(results || []);
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const setupFilters = () => {
     if (data?.length > 0) {
+      // Since prices are sorted by default in price asc order
       setMaxPriceFilter(
         roundUpToNearest500(data[data.length - 1]?.Fare?.OfferedFare),
       );
@@ -78,6 +109,7 @@ export default function FlightSearchPage() {
         roundUpToNearest500(data[data.length - 1]?.Fare?.OfferedFare),
       );
 
+      // Setup airline filters
       let uniqueAirlines = new Set();
       let uniqueAirlinesArr = [];
       for (let i = 0; i < data?.length; i++) {
@@ -90,42 +122,14 @@ export default function FlightSearchPage() {
 
       setAirlineFilters(uniqueAirlinesArr);
     }
-  }, [data]);
-
-  const searchFlights = async () => {
-    try {
-      setLoading(true);
-
-      const validatedParams = searchFlightParamsSchema.parse(params);
-
-      const results = await FlightApi.searchFlights({
-        AdultCount: validatedParams.AdultCount,
-        ChildCount: validatedParams.ChildCount,
-        InfantCount: validatedParams.InfantCount,
-        JourneyType: validatedParams.JourneyType,
-        Origin: validatedParams.Origin,
-        Destination: validatedParams.Destination,
-        DepartureDate: validatedParams.DepartureDate,
-        ArrivalDate: validatedParams.ArrivalDate,
-        FlightCabinClass: validatedParams.FlightCabinClass,
-      });
-
-      console.log("Flight Results:", results);
-      setData(results || []);
-      setFilteredData(results || []);
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        toast.error(err.errors[0].message);
-      } else if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error("An unexpected error occurred");
-      }
-    } finally {
-      setLoading(false);
-    }
   };
 
+  // Setup filters
+  useEffect(() => {
+    setupFilters();
+  }, [data]);
+
+  // Update data on filter change
   useDebounce(
     () => {
       searchFlights();

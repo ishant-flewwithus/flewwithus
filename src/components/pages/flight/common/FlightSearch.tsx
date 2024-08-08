@@ -1,9 +1,5 @@
 "use client";
 import Image from "next/image";
-import PlaneSvg from "@/assets/plane.svg";
-import { ReactNode, SVGProps, useEffect, useRef } from "react";
-import Link from "next/link";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Stack from "@/components/generic/Stack";
 import FlightIcon from "@/assets/plane.svg";
 import CabIcon from "@/assets/cabs.svg";
@@ -18,23 +14,16 @@ import ArmedForcesIcon from "@/assets/user-pilot-tie_9585967 1.svg";
 import DoctorIcon from "@/assets/user-md_9856850 1.svg";
 import { DEFAULT_CONTENT_GAP } from "@/constants/style.constant";
 import Box from "@/components/generic/Box";
-import { LuSearch } from "react-icons/lu";
 import { MdFlightTakeoff } from "react-icons/md";
-import { Airport, AirportDBItem } from "@/models/Flight";
+import { AirportDBItem } from "@/models/Flight";
 import DatePicker from "@/components/generic/DatePicker";
 import { addDays, format, getDate } from "date-fns";
 import { GrAdd, GrSubtract } from "react-icons/gr";
 import Popover from "@/components/generic/Popover";
-import Autocomplete from "@/components/generic/Autocomplete";
-import useSWR from "swr";
-import * as AirportApi from "@/network/flights/airport";
 import AutocompleteWithApi from "@/components/generic/AutocompleteWithApi";
-import { useDebounce } from "react-use";
-import { fetcher } from "@/util/fetcher";
 import { toast } from "react-toastify";
-import * as FlightApi from "@/network/flights/flight";
-import { searchFlightParamsSchema } from "@/util/validation/validation";
-import { z } from "zod";
+import { validateFlightSearchParams } from "@/util/validation/validateFlight";
+
 const navLinks = [
   {
     title: "Flights",
@@ -106,50 +95,6 @@ const flightClassOptions = [
   },
 ];
 
-interface FlightConfigCounterProps {
-  title: string;
-  count: number;
-  setCount: React.Dispatch<React.SetStateAction<number>>;
-}
-
-const FlightConfigCounter = ({
-  title,
-  count,
-  setCount,
-}: FlightConfigCounterProps) => {
-  return (
-    <div className="col-span-12 select-none rounded-md border border-gray-300 px-6 py-2 md:col-span-4">
-      <div className="my-1 text-center text-base font-semibold">{title}</div>
-      <div className="border-b-2 pb-2 text-center text-xs font-semibold">
-        On the day of travel
-      </div>
-      <div className="mt-2 flex items-center justify-around">
-        <div
-          className="cursor-pointer p-2"
-          onClick={() => {
-            if (count > 0) {
-              setCount(count - 1);
-            }
-          }}
-        >
-          <GrSubtract size={13} />
-        </div>
-        <div className="text-2xl font-medium">{count}</div>
-        <div
-          className="cursor-pointer p-2"
-          onClick={() => {
-            if (count < 9) {
-              setCount(count + 1);
-            }
-          }}
-        >
-          <GrAdd size={13} />
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export default function FlightSearch() {
   const pathname = usePathname();
   const router = useRouter();
@@ -182,27 +127,38 @@ export default function FlightSearch() {
 
   const handleFlightSearch = async () => {
     try {
-      const validatedParams = searchFlightParamsSchema.parse({
+      validateFlightSearchParams({
         AdultCount: adultCount.toString(),
         ChildCount: childrenCount.toString(),
         InfantCount: infantCount.toString(),
         JourneyType: flightMode.toString(),
-        Origin: fromAirport?.AIRPORTCODE,
-        Destination: toAirport?.AIRPORTCODE,
-        DepartureDate: fromDate,
-        ArrivalDate: toDate,
-        FlightCabinClass: flightClass.value,
+        Origin: fromAirport?.AIRPORTCODE || "",
+        Destination: toAirport?.AIRPORTCODE || "",
+        DepartureDate: fromDate.toISOString(),
+        ArrivalDate: toDate.toISOString(),
+        FlightCabinClass: flightClass.value.toString(),
+        FromCity: fromAirport?.CITYNAME || "",
+        ToCity: toAirport?.CITYNAME || "",
       });
-      router.push(
-        `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=1&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(toDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}`,
-      );
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        toast.error(err.errors[0].message);
-        console.error("Validation error:", err.errors);
+
+      // In TBO API, fromDate = departureDate and arrivalDate; and toDate = returnDepartureDate and returnArrivalDate
+      if (flightMode === "1") {
+        // One way trip
+        router.push(
+          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}`,
+        );
+      } else if (flightMode === "2") {
+        // Return trip
+        router.push(
+          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}&ReturnArrivalDate=${toDate}&ReturnDepartureDate=${toDate}&ReturnFlightCabinClass=${flightClass.value}`,
+        );
       } else {
-        console.error("Error:", err);
+        throw new Error("Invalid journey type");
       }
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
     }
   };
 
@@ -546,3 +502,47 @@ export default function FlightSearch() {
     </Box>
   );
 }
+
+interface FlightConfigCounterProps {
+  title: string;
+  count: number;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const FlightConfigCounter = ({
+  title,
+  count,
+  setCount,
+}: FlightConfigCounterProps) => {
+  return (
+    <div className="col-span-12 select-none rounded-md border border-gray-300 px-6 py-2 md:col-span-4">
+      <div className="my-1 text-center text-base font-semibold">{title}</div>
+      <div className="border-b-2 pb-2 text-center text-xs font-semibold">
+        On the day of travel
+      </div>
+      <div className="mt-2 flex items-center justify-around">
+        <div
+          className="cursor-pointer p-2"
+          onClick={() => {
+            if (count > 0) {
+              setCount(count - 1);
+            }
+          }}
+        >
+          <GrSubtract size={13} />
+        </div>
+        <div className="text-2xl font-medium">{count}</div>
+        <div
+          className="cursor-pointer p-2"
+          onClick={() => {
+            if (count < 9) {
+              setCount(count + 1);
+            }
+          }}
+        >
+          <GrAdd size={13} />
+        </div>
+      </div>
+    </div>
+  );
+};
