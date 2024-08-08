@@ -10,6 +10,9 @@ import {
   startOfDay,
   isBefore,
   subDays,
+  setMinutes,
+  setHours,
+  format,
 } from "date-fns";
 import * as FlightApi from "@/network/flights/flight";
 import { useSearchParams } from "next/navigation";
@@ -25,6 +28,7 @@ import {
 import { useDebounce } from "react-use";
 import { roundUpToNearest500 } from "@/util/math";
 import { validateFlightSearchParams } from "@/util/validation/validateFlight";
+import { getDateWithTime, isTimeBefore } from "@/util/dateFormatter";
 
 export default function FlightSearchPage() {
   const searchParams = useSearchParams();
@@ -51,6 +55,9 @@ export default function FlightSearchPage() {
   const [minPriceFilter, setMinPriceFilter] = useState(0);
   const [maxPriceFilter, setMaxPriceFilter] = useState(10000);
   const [airlineFilters, setAirlineFilters] = useState<AirlineFilter[]>([]);
+  const [flightTimeRange, setFlightTimeRange] = useState<string | undefined>(
+    "morning",
+  );
 
   // Get flights
   const params = {
@@ -132,12 +139,28 @@ export default function FlightSearchPage() {
   }, [data]);
 
   // Update data on filter change
+
+  useEffect(() => {
+    searchFlights();
+  }, [searchParams]);
+
   useDebounce(
     () => {
-      searchFlights();
+      let directFlight = filters.find((f) => f.id === "directflight");
+      let oneStop = filters.find((f) => f.id === "oneStopflight");
+      if (directFlight?.value) {
+        setFilteredData(
+          data?.filter((d) => d.Segments[0][0].StopOver === false), // TODO: Correct it
+        );
+      }
+      if (oneStop?.value) {
+        setFilteredData(
+          data?.filter((d) => d.Segments[0]?.length <= 2), // TODO: Correct it
+        );
+      }
     },
     800,
-    [filters, searchParams],
+    [filters],
   );
 
   useDebounce(
@@ -165,6 +188,52 @@ export default function FlightSearchPage() {
     [airlineFilters],
   );
 
+  useDebounce(
+    () => {
+      // Example date (change to desired date)
+      const today = new Date();
+
+      // Create formatted dates for different times
+      const morningFlight = getDateWithTime(today, 8, 0); // 08:00 AM
+      const afternoonFlight = getDateWithTime(today, 14, 0); // 02:00 PM
+      const eveningFlight = getDateWithTime(today, 19, 0); // 07:00 PM
+      const nightFlight = getDateWithTime(today, 1, 0); // 01:00 AM
+
+      let dateToUse: Date | null;
+
+      switch (flightTimeRange) {
+        case "morning":
+          dateToUse = morningFlight;
+          break;
+        case "noon":
+          dateToUse = afternoonFlight;
+          break;
+        case "evening":
+          dateToUse = eveningFlight;
+          break;
+        case "night":
+          dateToUse = nightFlight;
+          break;
+        default:
+          dateToUse = nightFlight;
+      }
+
+      // if (dateToUse) {
+      //   setFilteredData(
+      //     data?.filter((d) => {
+      //       if (
+      //         isTimeBefore(parseISO(d.Segments[0][0].Origin.DepTime), dateToUse)
+      //       ) {
+      //         return d;
+      //       }
+      //     }),
+      //   );
+      // }
+    },
+    800,
+    [flightTimeRange],
+  );
+
   return (
     <Page headerChild={<FlightSearch />} overlapChildrenOverHeader={false}>
       <div className="grid grid-cols-12 gap-8">
@@ -183,6 +252,8 @@ export default function FlightSearchPage() {
           setMinPriceFilter={setMinPriceFilter}
           airlineFilters={airlineFilters}
           setAirlineFilters={setAirlineFilters}
+          flightTimeRange={flightTimeRange}
+          setFlightTimeRange={setFlightTimeRange}
         />
 
         {/* RIGHT COLUMN */}

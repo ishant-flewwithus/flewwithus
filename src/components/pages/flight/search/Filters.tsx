@@ -3,14 +3,14 @@ import Slider from "@/components/generic/Slider";
 import Stack from "@/components/generic/Stack";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import MorningEnabledIcon from "@/assets/morning_enabled.svg";
-import MorningDisabledIcon from "@/assets/morning_disabled.svg";
-import NoonEnabledIcon from "@/assets/noon_enabled.svg";
-import NoonDisabledIcon from "@/assets/noon_disabled.svg";
-import EveningEnabledIcon from "@/assets/evening_enabled.svg";
-import EveningDisabledIcon from "@/assets/evening_disabled.svg";
-import NightEnabledIcon from "@/assets/night_enabled.svg";
-import NightDisabledIcon from "@/assets/night_disabled.svg";
+import MorningEnabledIcon from "@/assets/MorningEnabledIcon.svg";
+import MorningDisabledIcon from "@/assets/MorningDisabledIcon.svg";
+import NoonEnabledIcon from "@/assets/NoonEnabledIcon.svg";
+import NoonDisabledIcon from "@/assets/NoonDisabledIcon.svg";
+import EveningEnabledIcon from "@/assets/EveningEnabledIcon.svg";
+import EveningDisabledIcon from "@/assets/EveningDisabledIcon.svg";
+import NightEnabledIcon from "@/assets/NightEnabledIcon.svg";
+import NightDisabledIcon from "@/assets/NightDisabledIcon.svg";
 import { IoClose } from "react-icons/io5";
 import {
   AirlineFilter,
@@ -42,8 +42,8 @@ interface FlightTimeFilterButtonProps {
   iconHeight: number;
   label: string;
   value: string;
-  flightTimeRange: string;
-  setFlightTimeRange: React.Dispatch<React.SetStateAction<string>>;
+  flightTimeRange: string | undefined;
+  setFlightTimeRange: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const FlightTimeFilterButton = ({
@@ -57,7 +57,16 @@ const FlightTimeFilterButton = ({
   setFlightTimeRange,
 }: FlightTimeFilterButtonProps) => {
   return (
-    <div className="cursor-pointer" onClick={() => setFlightTimeRange(value)}>
+    <div
+      className="cursor-pointer"
+      onClick={() => {
+        if (flightTimeRange === value) {
+          setFlightTimeRange(undefined);
+        } else {
+          setFlightTimeRange(value);
+        }
+      }}
+    >
       <div className="mb-2 flex h-12 items-end justify-center">
         <Image
           src={flightTimeRange === value ? enabledIcon : disabledIcon}
@@ -85,6 +94,8 @@ interface FilterProps {
   setMinPriceFilter: React.Dispatch<React.SetStateAction<number>>;
   airlineFilters: AirlineFilter[];
   setAirlineFilters: React.Dispatch<React.SetStateAction<AirlineFilter[]>>;
+  flightTimeRange: string | undefined;
+  setFlightTimeRange: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export default function Filters({
@@ -101,9 +112,9 @@ export default function Filters({
   setMinPriceFilter,
   airlineFilters,
   setAirlineFilters,
+  flightTimeRange,
+  setFlightTimeRange,
 }: FilterProps) {
-  const [flightTimeRange, setFlightTimeRange] = useState("morning");
-
   return (
     <div
       className={`${showFiltersOnMobile ? "fixed" : "hidden"} bottom-0 left-0 right-0 top-0 z-[200] col-span-12 w-screen overflow-y-auto bg-onprimary p-4 xl:col-span-3 xl:block xl:w-auto`}
@@ -182,8 +193,8 @@ export default function Filters({
               label="12am - 6pm"
               enabledIcon={NoonEnabledIcon}
               disabledIcon={NoonDisabledIcon}
-              iconWidth={30}
-              iconHeight={30}
+              iconWidth={100}
+              iconHeight={100}
               value="noon"
               flightTimeRange={flightTimeRange}
               setFlightTimeRange={setFlightTimeRange}
@@ -192,8 +203,8 @@ export default function Filters({
               label="6pm - 12am"
               enabledIcon={EveningEnabledIcon}
               disabledIcon={EveningDisabledIcon}
-              iconWidth={120}
-              iconHeight={120}
+              iconWidth={100}
+              iconHeight={100}
               value="evening"
               flightTimeRange={flightTimeRange}
               setFlightTimeRange={setFlightTimeRange}
@@ -202,8 +213,8 @@ export default function Filters({
               label="12am - 6pm"
               enabledIcon={NightEnabledIcon}
               disabledIcon={NightDisabledIcon}
-              iconWidth={25}
-              iconHeight={25}
+              iconWidth={100}
+              iconHeight={100}
               value="night"
               flightTimeRange={flightTimeRange}
               setFlightTimeRange={setFlightTimeRange}
