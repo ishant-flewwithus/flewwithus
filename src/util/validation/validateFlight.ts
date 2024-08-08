@@ -14,7 +14,7 @@ export function validateFlightSearchParams(params: FlightSearchParams): void {
     FlightCabinClass = "1",
   } = params;
 
-  let errMsg: string | null = null;
+  let errMsg: string | undefined = undefined;
 
   const totalPassengers =
     parseInt(AdultCount) + parseInt(ChildCount) + parseInt(InfantCount);
@@ -50,13 +50,13 @@ export function validateFlightSearchParams(params: FlightSearchParams): void {
 
 export function isAirportDBItem(obj: any) {
   return (
-    obj !== null &&
-    obj.AIRPORTCODE !== null &&
-    obj.AIRPORTNAME !== null &&
-    obj.TERMINAL !== null &&
-    obj.CITYCODE !== null &&
-    obj.CITYNAME !== null &&
-    obj.COUNTRYCODE !== null &&
-    obj.COUNTRYNAME !== null
+    obj !== undefined &&
+    obj.AIRPORTCODE !== undefined &&
+    obj.AIRPORTNAME !== undefined &&
+    obj.TERMINAL !== undefined &&
+    obj.CITYCODE !== undefined &&
+    obj.CITYNAME !== undefined &&
+    obj.COUNTRYCODE !== undefined &&
+    obj.COUNTRYNAME !== undefined
   );
 }
