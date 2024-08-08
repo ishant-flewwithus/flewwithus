@@ -101,6 +101,7 @@ export default function NavBar() {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   const pathname = usePathname();
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -119,7 +120,9 @@ export default function NavBar() {
             <RoundedButton
               key={index}
               title={item.title}
-              isSelected={pathname === item.navigateUrl}
+              isSelected={
+                "/" + String(pathname).split("/")[1] === item.navigateUrl
+              }
               icon={item.icon}
               navigateUrl={item.navigateUrl}
             />
@@ -155,7 +158,7 @@ export default function NavBar() {
               <GiHamburgerMenu />
             </div>
             {showMobileNavMenu && (
-              <div className="absolute right-0 w-[60vw] rounded-b-xl rounded-l-xl bg-primary-500 p-4 shadow-xl sm:w-[45vw] md:w-[30vw] z-[250]">
+              <div className="absolute right-0 z-[250] w-[60vw] rounded-b-xl rounded-l-xl bg-primary-500 p-4 shadow-xl sm:w-[45vw] md:w-[30vw]">
                 {navLinksMobile.map((item, index) => (
                   <div
                     key={index}
