@@ -1,7 +1,7 @@
 import Page from "@/components/app/Page";
 import Image from "next/image";
 
-export default function page() {
+export default function PrivacyPolicy() {
   return (
     <Page headerChild={
       <div>

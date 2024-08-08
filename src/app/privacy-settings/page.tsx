@@ -1,6 +1,6 @@
 import Page from "@/components/app/Page";
 
-export default function page() {
+export default function privacySettings() {
   return (
     <Page headerChild={
       <div className="text-center text-5xl text-onprimary my-10 font-bold ">
