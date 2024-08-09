@@ -8,7 +8,7 @@ export default function privacySettings() {
         <div className="text-center text-5xl text-onprimary my-10 font-light ">
         What can we <span className="font-bold">help you</span> with today?
         </div>
-      <div className="h-12 w-full flex flex-row gap-5 px-72">
+      <div className="h-12 sm:w-[700px]  flex flex-row gap-5">
         <div className="flex w-full h-full bg-white rounded-full cursor-pointer">
           <input type="search" name="search" id="search" placeholder="How can we help you today?" className="w-full border-none rounded-full bg-transparent px-4 py-1"/>
         </div>
