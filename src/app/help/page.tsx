@@ -1,4 +1,5 @@
 import Page from "@/components/app/Page";
+import Image from "next/image";
 
 export default function privacySettings() {
   return (
@@ -8,12 +9,12 @@ export default function privacySettings() {
         What can we <span className="font-bold">help you</span> with today?
         </div>
       <div className="h-12 w-full flex flex-row gap-5 px-72">
-        <div className="w-full h-full bg-white rounded-full cursor-pointer">
-
+        <div className="flex w-full h-full bg-white rounded-full cursor-pointer">
+          <input type="search" name="search" id="search" placeholder="How can we help you today?" className="w-full border-none rounded-full bg-transparent px-4 py-1"/>
         </div>
-        <div className="h-full w-1/3 bg-primary-500 rounded-full border-2 border-white cursor-pointer flex justify-center items-center text-onprimary text-xl">
+        <button className="h-full w-1/3 bg-primary-500 rounded-full border-2 border-white cursor-pointer flex justify-center items-center text-onprimary text-xl">
         Search
-        </div>
+        </button>
       </div>
       </div>
     } overlapChildrenOverHeader={true}>
@@ -22,6 +23,29 @@ export default function privacySettings() {
             Browse articles by topic
           </div>
         </div>
+        <div className="flex justify-center">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="cursor-pointer">
+              <Image src={"/searching_help.png"} width={300} height={300} alt="searching help logo"></Image>
+            </div>
+            <div className="cursor-pointer">
+              <Image src={"/prices_help.png"} width={300} height={300} alt="pricing help logo"></Image>
+            </div>
+            <div className="cursor-pointer">
+              <Image src={"/booking_help.png"} width={300} height={300} alt="bookings help logo"></Image>
+            </div>
+            <div className="cursor-pointer">
+              <Image src={"/travelling_help.png"} width={300} height={300} alt="travel help logo"></Image>
+            </div>
+            <div className="cursor-pointer">
+              <Image src={"/about_help.png"} width={300} height={300} alt="about help logo"></Image>
+            </div>
+            <div className="cursor-pointer">
+              <Image src={"/privacy_help.png"} width={300} height={300} alt="bookings help logo"></Image>
+            </div>
+          </div>
+        </div>
+
         
     </Page>
   );
