@@ -1,7 +1,7 @@
 import Page from "@/components/app/Page";
 import Image from "next/image";
 
-export default function privacySettings() {
+export default function help() {
   return (
     <Page headerChild={
       <div className="flex flex-col justify-center items-center">
