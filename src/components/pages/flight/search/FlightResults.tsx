@@ -27,8 +27,16 @@ export default function FlightResults({
     <div className="col-span-12 xl:col-span-9">
       <div className="flex items-center justify-between">
         <div className="text-2xl">
-          Flights from {fromCity} to {toCity}{" "}
-          <span className="font-medium">( {flights?.length} Flights )</span>
+          {loading ? (
+            <>
+              Looking for Flights from {fromCity} to {toCity}...
+            </>
+          ) : (
+            <>
+              Flights from {fromCity} to {toCity}{" "}
+              <span className="font-medium">( {flights?.length} Flights )</span>
+            </>
+          )}
         </div>
         <div>
           <div
