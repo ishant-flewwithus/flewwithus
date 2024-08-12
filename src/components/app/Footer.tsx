@@ -10,7 +10,7 @@ export default function Footer() {
   const footerLinks = [
     { title: "Help", url: "/help" },
     { title: "Privacy Policy", url: "/privacy-policy" },
-    { title: "Terms of service", url: "/" },
+    { title: "Terms of service", url: "/tearms-of-service" },
     { title: "Privacy Settings", url: "/privacy-settings" },
     { title: "Login", url: "/" },
     { title: "About Us", url: "/about" },
