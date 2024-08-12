@@ -19,9 +19,9 @@ export default function Checkgroup({
   multiSelect,
 }: CheckgroupProps) {
   return (
-    <div className="grid grid-cols-12">
+    <div className="grid grid-cols-12 gap-4">
       {items?.map((item, index) => (
-        <div className="col-span-4 flex items-center gap-4" key={index}>
+        <div className="col-span-12 md:col-span-4 lg:col-span-3 flex items-center gap-4" key={index}>
           <div>
             <CheckBox
               checked={item.isSelected}

@@ -94,20 +94,22 @@ export default function FlightBookingPage() {
     <Page
       headerChild={
         <div className="grid grid-cols-12 gap-4 rounded-lg bg-onprimary p-4">
-          <div className="col-span-3 text-2xl font-semibold">Fare Summary:</div>
-          <div className="col-span-3">
+          <div className="col-span-6 text-2xl font-semibold lg:col-span-3">
+            Fare Summary:
+          </div>
+          <div className="col-span-6 flex flex-col items-end justify-end lg:col-span-3 lg:block">
             <div>
               <span className="font-bold">Base Fare:</span> ₹ 2,925
             </div>
             <div>Adult(s) (1 X ₹17,564)</div>
           </div>
-          <div className="col-span-3">
+          <div className="col-span-3 hidden lg:block">
             <div>
               <span className="font-bold">Taxes and Surcharges:</span> ₹ 2,925
             </div>
             <div>Airline Taxes and Surcharges (1 x ₹ 17,564)</div>
           </div>
-          <div className="col-span-3">
+          <div className="col-span-3 hidden lg:block">
             <div className="text-xl font-bold text-primary-900">
               Total Amount ₹ 2,925
             </div>
@@ -119,16 +121,16 @@ export default function FlightBookingPage() {
     >
       <Section title="Complete your booking">
         {/* FLIGHT FROM AND TO */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 border-l-4 border-l-primary-500 pl-2">
-            <div className="flex items-center gap-2 text-xl font-semibold">
+        <div className="block items-center justify-between lg:flex">
+          <div className="block items-center gap-4 lg:flex">
+            <div className="flex items-center gap-2 border-l-4 border-l-primary-500 pl-2 text-2xl font-semibold lg:text-xl">
               New Delhi <FaArrowRightLong /> Bengaluru
             </div>
-            <div className="rounded-md bg-primary-500 p-2 text-sm text-onprimary">
+            <div className="mt-2 inline-block rounded-full bg-primary-500 px-4 py-2 text-sm text-onprimary lg:mt-0 lg:block">
               Wednesday, May 22 • Non Stop • 2h 45m
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="mt-2 hidden items-center gap-4 lg:mt-0 lg:flex">
             <div className="font-medium text-textheading">
               Economy &gt; Flex
             </div>
@@ -143,24 +145,26 @@ export default function FlightBookingPage() {
         <div>
           {flightStops?.map((item, index) => (
             <div key={index}>
-              <div className="grid grid-cols-12 items-center gap-14">
-                <div className="col-span-3 grid grid-cols-12 items-center gap-4">
+              <div className="grid grid-cols-12 items-center gap-5 lg:gap-14">
+                <div className="col-span-7 grid grid-cols-12 items-center gap-4 text-xs sm:text-sm lg:col-span-3 lg:text-base">
                   <div className="col-span-5">
                     {format(item.date, "hh:mm a")}
                   </div>
                   <div className="col-span-2 flex items-center justify-center">
-                    <div className="h-6 w-6 rounded-full border-2 border-primary-500"></div>
+                    <div className="h-4 w-4 rounded-full border-2 border-primary-500 lg:h-6 lg:w-6"></div>
                   </div>
                   <div className="col-span-5 text-end font-semibold">
                     {item.place}
                   </div>
                 </div>
 
-                <div className="col-span-9">{item.airport}</div>
+                <div className="col-span-5 text-xs sm:text-sm lg:col-span-9 lg:text-base">
+                  {item.airport}
+                </div>
               </div>
               {index !== flightStops.length - 1 && (
-                <div className="grid grid-cols-12 items-center gap-14">
-                  <div className="col-span-3 grid grid-cols-12 items-center gap-4">
+                <div className="grid grid-cols-12 items-center gap-5 lg:gap-14">
+                  <div className="col-span-7 grid grid-cols-12 items-center gap-4 lg:col-span-3">
                     <div className="col-span-5"></div>
                     <div className="col-span-2 flex items-center justify-center">
                       <div className="h-10 border-2 border-dashed border-primary-500"></div>
@@ -168,7 +172,7 @@ export default function FlightBookingPage() {
                     <div className="col-span-5 text-center text-sm">2h 00m</div>
                   </div>
 
-                  <div className="col-span-9"></div>
+                  <div className="col-span-5 lg:col-span-9"></div>
                 </div>
               )}
             </div>
@@ -184,7 +188,7 @@ export default function FlightBookingPage() {
             <div className="text-xl font-medium">
               Cancellation Refund Policy
             </div>
-            <div className="cursor-pointer rounded-full bg-primary-500 px-6 py-2 text-center text-onprimary">
+            <div className="hidden cursor-pointer rounded-full bg-primary-500 px-6 py-2 text-center text-onprimary lg:block">
               View Fare Rules
             </div>
           </div>
@@ -254,7 +258,7 @@ export default function FlightBookingPage() {
         <div className="mt-8">
           <div className="font-bold">Booking details will be sent to</div>
           <div className="mt-4 grid grid-cols-12 gap-4">
-            <div className="col-span-4">
+            <div className="col-span-12 lg:col-span-4">
               <Select
                 label="Country"
                 options={COUNTRY_CODE_OPTIONS}
@@ -262,7 +266,7 @@ export default function FlightBookingPage() {
                 onChange={(val) => setBookerCountryCode(val)}
               />
             </div>
-            <div className="col-span-4">
+            <div className="col-span-12 lg:col-span-4">
               <TextField
                 label="Phone"
                 placeholder="XX XXXX XXXX"
@@ -271,7 +275,7 @@ export default function FlightBookingPage() {
                 variant="contained"
               />
             </div>
-            <div className="col-span-4">
+            <div className="col-span-12 lg:col-span-4">
               <TextField
                 label="Email"
                 placeholder="user@email.com"
@@ -287,7 +291,7 @@ export default function FlightBookingPage() {
         </div>
       </Section>
       <Section title="Your State">
-        <div className="w-1/3">
+        <div className="w-full lg:w-1/3">
           <Select
             label="Select State"
             options={INDIAN_STATES}
@@ -310,7 +314,7 @@ export default function FlightBookingPage() {
           <div className="mt-4 grid grid-cols-12 gap-4">
             {tripFeatures?.map((item, index) => (
               <div
-                className="col-span-4 flex cursor-pointer items-center gap-4 rounded-md bg-onprimary p-4"
+                className="col-span-12 lg:col-span-4 flex cursor-pointer items-center gap-4 rounded-md bg-onprimary p-4"
                 key={index}
               >
                 <div className="rounded-md bg-primary-100 p-2 text-2xl text-primary-700">
