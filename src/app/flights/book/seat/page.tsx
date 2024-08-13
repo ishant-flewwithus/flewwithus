@@ -106,7 +106,7 @@ export default function FlightSeat() {
             </div>
             <div className="grid grid-cols-12 gap-2 mt-4">
               {details.map((item, index) => (
-                <div className="flex col-span-4 items-center gap-2 p-2">
+                <div className="flex col-span-4 items-center gap-2 p-2" key={index}>
                     {item.icon} <div className="">{item.label}</div>
                 </div>
               ))}
