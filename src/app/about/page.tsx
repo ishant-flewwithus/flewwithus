@@ -1,7 +1,7 @@
 import Page from "@/components/app/Page";
 import Image from "next/image";
 
-export default function page() {
+export default function Aboutpage() {
   return (
     <Page headerChild={
       <div className="text-center text-5xl text-onprimary my-10 font-bold ">
