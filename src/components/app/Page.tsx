@@ -22,7 +22,7 @@ export default function Page({
         {/* HEADER CHILD */}
         <div className="w-full">
           {/* BACKGROUND IMAGE */}
-          <div className="absolute left-0 right-0 top-0 z-[-1] h-full w-full">
+          {/* <div className="absolute left-0 right-0 top-0 z-[-1] h-full w-full">
             <div className="h-full w-full">
               <Image
                 src="/flight_home_image.png"
@@ -30,8 +30,9 @@ export default function Page({
                 alt="background image"
               />
             </div>
-          </div>
-          <div>
+          </div> */}
+          <div className="absolute left-0 right-0 top-0 z-[-1] h-full w-full bg-gradient-to-r from-[#333690] to-[#8E92EA]"></div>
+          <div className="bg-transparent">
             {/* HEADER CONTENT */}
             <Container>
               <Stack gap={DEFAULT_SECTION_GAP} direction="vertical">
