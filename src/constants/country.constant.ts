@@ -58,3 +58,16 @@ export const INDIAN_STATES: SelectOption[] = [
   { label: "Ladakh", value: "ladakh" },
   { label: "Jammu and Kashmir", value: "jammu and kashmir" },
 ];
+
+export const COUNTRY_CODE_FLAG_OPTIONS: SelectOption[] = Countries
+  // Filter countries if needed (e.g., remove countries without phone codes)
+  .filter((c) => c.idd.root)
+  // Sort countries by name in ascending order
+  .sort((a, b) => a.name.official.localeCompare(b.name.official))
+  // Flatten the mapped result
+  .flatMap((c) =>
+    c.idd.suffixes.map((cs) => ({
+      label: `(${c.idd.root}${cs}) ${c.name.common}`,
+      value: `${c.idd.root}${cs}`, // TODO: ADD FLAGS
+    })),
+  );

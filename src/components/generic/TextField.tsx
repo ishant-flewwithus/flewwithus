@@ -31,7 +31,7 @@ export default function TextField({
         <input
           type={type}
           placeholder={placeholder || "Enter " + label}
-          className={`${variant === "outlined" ? "w-full rounded-full border border-gray-300 px-6 py-3 outline-none" : "w-full bg-background rounded-full border border-background px-6 py-[15px] outline-none"}`}
+          className={`[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${variant === "outlined" ? "w-full rounded-full border border-gray-300 px-6 py-3 outline-none" : "w-full rounded-full border border-background bg-background px-6 py-[15px] outline-none"}`}
           {...props}
         />
       </div>

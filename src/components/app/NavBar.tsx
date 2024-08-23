@@ -22,6 +22,9 @@ import TextWithBackgroundLine from "../generic/TextWithBackgroundLine";
 import CenterBox from "../generic/Center";
 import { FaPlaneDeparture } from "react-icons/fa6";
 import { FaHotel } from "react-icons/fa";
+import PhoneNumberPicker from "../generic/PhoneNumberPicker";
+import { toast } from "react-toastify";
+import * as UserApi from "@/network/flights/user";
 
 const navLinks = [
   {
@@ -101,6 +104,30 @@ export default function NavBar() {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   const pathname = usePathname();
+
+  const [signupWith, setSignupWith] = useState("phone");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [shouldAskForOtp, setShouldAskForOtp] = useState(false);
+  const [otp, setOtp] = useState("");
+
+  const signup = async () => {
+    try {
+      if (signupWith === "email") {
+        console.log("email auth");
+        const data = await UserApi.signup("email", email, password, null);
+      } else if (signupWith === "phone") {
+        console.log("phone auth");
+        const data = await UserApi.signup("phone", null, null, phoneNumber);
+      } else {
+        // NO-OP
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
 
   return (
     <>
@@ -215,16 +242,60 @@ export default function NavBar() {
               <div className="col-span-6 text-onprimary">
                 <div className="my-4 rounded-xl bg-white p-8 text-textheading">
                   <Stack direction="vertical" gap={20}>
-                    <TextField type="text" label="Email" />
-                    <TextField type="password" label="Password" />
+                    {shouldAskForOtp ? (
+                      <>
+                        <TextField
+                          type="number"
+                          label="OTP"
+                          value={otp}
+                          onChange={(e) => setOtp(e.target.value)}
+                        />
+                        <Button onClick={() => signup()}>Continue</Button>
+                      </>
+                    ) : (
+                      <>
+                        {signupWith === "email" ? (
+                          <>
+                            <TextField
+                              type="email"
+                              label="Email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                            />
+                            <TextField
+                              type="password"
+                              label="Password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <Button onClick={() => signup()}>Continue</Button>
+                          </>
+                        ) : (
+                          <>
+                            <PhoneNumberPicker
+                              label="Phone Number"
+                              value={phoneNumber}
+                              setValue={setPhoneNumber}
+                            />
+                            <Button onClick={() => signup()}>Continue</Button>
+                          </>
+                        )}
+                      </>
+                    )}
 
-                    <Button>Continue</Button>
-
-                    <div className="my-1 cursor-pointer text-center font-semibold text-green-600">
-                      Login / Signup with mobile
+                    <div
+                      className="cursor-pointer text-center font-semibold text-green-600"
+                      onClick={() => {
+                        signupWith === "email"
+                          ? setSignupWith("phone")
+                          : setSignupWith("email");
+                      }}
+                    >
+                      Or signup with{" "}
+                      {signupWith === "email" ? "Phone Number" : "Email"}
                     </div>
 
-                    <TextWithBackgroundLine title="Or Login / Signup with" />
+                    <TextWithBackgroundLine title="Use auth providers" />
                     <CenterBox>
                       <Image
                         src="/google_signin.png"

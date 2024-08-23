@@ -125,24 +125,21 @@ export default function UserProfile() {
             </div>
           </div>
           <div className="col-span-9">
-            {selectedMenuItem === "profile" && (
-              <CollapsableSection title="Profile">
-                <UserProfileField label="Email" />
-                <UserProfileField label="Birthday" />
-                <UserProfileField label="Gender" />
-                <UserProfileField label="Marital Sign" />
-                <UserProfileField label="Address" />
-                <UserProfileField label="Pincode" />
-                <UserProfileField label="State" />
-              </CollapsableSection>
-            )}
-            {selectedMenuItem === "login" && (
-              <CollapsableSection title="Login">
-                <UserProfileField label="Mobile number" />
-                <UserProfileField label="Email Id" />
-                <UserProfileField label="Password" />
-              </CollapsableSection>
-            )}
+            <CollapsableSection title="Profile">
+              <UserProfileField label="Email" />
+              <UserProfileField label="Birthday" />
+              <UserProfileField label="Gender" />
+              <UserProfileField label="Marital Sign" />
+              <UserProfileField label="Address" />
+              <UserProfileField label="Pincode" />
+              <UserProfileField label="State" />
+            </CollapsableSection>
+
+            <CollapsableSection title="Login">
+              <UserProfileField label="Mobile number" />
+              <UserProfileField label="Email Id" />
+              <UserProfileField label="Password" />
+            </CollapsableSection>
           </div>
         </div>
       </div>
