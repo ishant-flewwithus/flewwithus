@@ -263,7 +263,7 @@ export default function FlightSearch() {
             Gateway To Hassle-Free Booking
           </div>
           <div className="mx-auto inline-block rounded-full bg-green-600 px-8 py-2 text-center text-xs font-medium text-white md:text-sm lg:mx-0">
-            NO CONVINIENCE FEE, NO PRICE HIKE
+            NO CONVENIENCE FEE, NO PRICE HIKE
           </div>
         </div>
 

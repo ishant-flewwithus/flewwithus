@@ -179,19 +179,21 @@ export default function NavBar() {
         setOpen={setShowAuthDialog}
         hideCloseButton={true}
       >
-        <div className="relative w-full">
+        <div className="relative w-full bg-[#BEBFE2]">
           {/* BACKGROUND IMAGE */}
+          <div className="opacity-0 md:opacity-100">
           <Image
             src="/auth_bg.webp"
             alt="auth image 1"
             className="absolute inset-0 h-full w-full object-cover"
             fill={true}
           />
+          </div>
           <div className="absolute inset-0 bg-black opacity-40"></div>
           <div className="relative z-10 mx-4 bg-opacity-50 p-6">
-            <div className="grid grid-cols-12 gap-2">
+            <div className="flex-intial md:grid md:grid-cols-12 md:gap-2">
               {/* OFFER TEXT */}
-              <div className="col-span-6 flex flex-col items-center justify-center gap-4 text-onprimary">
+              <div className="col-span-6 flex flex-col collapse md:visible items-center justify-center gap-4 text-onprimary">
                 <div className="w-2/3">
                   <div className="mb-10 text-2xl font-semibold">
                     Sign up now to get
@@ -212,8 +214,8 @@ export default function NavBar() {
                 </div>
               </div>
               {/* AUTH FORM */}
-              <div className="col-span-6 text-onprimary">
-                <div className="my-4 rounded-xl bg-white p-8 text-textheading">
+              <div className="col-span-12 md:col-span-6 text-onprimary">
+                <div className="mb-40 ml-0 md:mb-0 rounded-xl bg-white p-8 text-textheading">
                   <Stack direction="vertical" gap={20}>
                     <TextField type="text" label="Email" />
                     <TextField type="password" label="Password" />
