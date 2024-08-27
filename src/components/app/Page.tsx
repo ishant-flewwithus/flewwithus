@@ -4,12 +4,16 @@ import Stack from "../generic/Stack";
 import NavBar from "./NavBar";
 import { DEFAULT_SECTION_GAP } from "@/constants/style.constant";
 import Footer from "./Footer";
-
+import { toast } from "react-toastify";
+import * as UserApi from "@/network/flights/user";
+import { useEffect } from "react";
 interface PageProps {
   headerChild?: React.ReactNode;
   children?: React.ReactNode;
   overlapChildrenOverHeader?: boolean;
 }
+
+export const revalidate = 0;
 
 export default function Page({
   children,

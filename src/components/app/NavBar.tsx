@@ -13,7 +13,7 @@ import { MdChecklist } from "react-icons/md";
 import { TbArticle } from "react-icons/tb";
 import { MdOutlineSettings } from "react-icons/md";
 import { ReactNode, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Dialog from "../generic/Dialog";
 import Stack from "../generic/Stack";
 import TextField from "../generic/TextField";
@@ -25,6 +25,7 @@ import { FaHotel } from "react-icons/fa";
 import PhoneNumberPicker from "../generic/PhoneNumberPicker";
 import { toast } from "react-toastify";
 import * as UserApi from "@/network/flights/user";
+import { useSession } from "@/context/sessionContext";
 
 const navLinks = [
   {
@@ -115,17 +116,62 @@ export default function NavBar() {
 
   const signup = async () => {
     try {
+      let data;
       if (signupWith === "email") {
         console.log("email auth");
-        const data = await UserApi.signup("email", email, password, null);
+        data = await UserApi.signup("email", email, password, null);
       } else if (signupWith === "phone") {
         console.log("phone auth");
-        const data = await UserApi.signup("phone", null, null, phoneNumber);
+        data = await UserApi.signup("phone", null, null, phoneNumber);
       } else {
         // NO-OP
       }
+      if (data) {
+        setShouldAskForOtp(true);
+      }
     } catch (err) {
-      alert(err);
+      toast.error(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
+    }
+  };
+
+  const verifySignup = async () => {
+    try {
+      let data;
+      if (signupWith === "email") {
+        console.log("email auth");
+        data = await UserApi.verifySignup("email", email, null, otp);
+      } else if (signupWith === "phone") {
+        console.log("phone auth");
+        data = await UserApi.verifySignup("phone", null, phoneNumber, otp);
+      } else {
+        // NO-OP
+      }
+      if (data) {
+        //router.push("/profile");
+      }
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
+    }
+  };
+
+  const { user, setUser } = useSession();
+  const router = useRouter();
+
+  const logout = async () => {
+    try {
+      const isSuccess = await UserApi.logout();
+      if (isSuccess) {
+        setUser(undefined);
+        router.push("/");
+      }
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
     }
   };
 
@@ -168,12 +214,21 @@ export default function NavBar() {
               />
               <span className="text-xs lg:text-sm">IND | ENG | INR</span>
               <span className="text-xs text-textbody lg:text-sm">|</span>
-              <span
-                className="text-xs font-bold lg:text-sm"
-                onClick={() => setShowAuthDialog(true)}
-              >
-                LOGIN
-              </span>
+              {!user ? (
+                <span
+                  className="text-xs font-bold lg:text-sm"
+                  onClick={() => setShowAuthDialog(true)}
+                >
+                  LOGIN
+                </span>
+              ) : (
+                <span
+                  className="text-xs font-bold lg:text-sm"
+                  onClick={() => logout()}
+                >
+                  LOGOUT
+                </span>
+              )}
             </RoundedButtonBase>
           </div>
 
@@ -250,7 +305,7 @@ export default function NavBar() {
                           value={otp}
                           onChange={(e) => setOtp(e.target.value)}
                         />
-                        <Button onClick={() => signup()}>Continue</Button>
+                        <Button onClick={() => verifySignup()}>Continue</Button>
                       </>
                     ) : (
                       <>

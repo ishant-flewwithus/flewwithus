@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Toast from "@/components/app/Toast";
+import { SessionProvider } from "@/context/sessionContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className + " bg-background"}>
-        <main className="text-textheading">{children}</main>
+        <main className="text-textheading">
+          <SessionProvider>{children}</SessionProvider>
+        </main>
         <Toast />
       </body>
     </html>

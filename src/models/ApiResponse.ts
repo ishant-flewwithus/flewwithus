@@ -1,7 +1,7 @@
 interface ApiResponse<T> {
   success: boolean;
-  StatusMsg: string;
-  ResponseType: string;
+  message: string;
+  statusCode: string;
   data: T;
 }
 
