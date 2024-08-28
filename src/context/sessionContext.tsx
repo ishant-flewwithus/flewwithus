@@ -34,6 +34,21 @@ export const SessionProvider = ({ children }: SessionContextProviderProps) => {
 
   useEffect(() => {
     getUser();
+
+    // Define the function that handles tab/window focus
+    const handleFocus = () => {
+      getUser();
+    };
+
+    // Add event listeners for focus and visibilitychange
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    // Clean up the event listeners when the component unmounts
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
   }, []);
 
   return (

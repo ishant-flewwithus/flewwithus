@@ -36,14 +36,14 @@ export default function Select({
               border: "none",
               outline: "none",
               borderRadius: "50px",
-              padding: "10px",
+              padding: "3px",
             }),
             menu: (base) => ({
               ...base,
               backgroundColor: "white",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
               borderRadius: "10px",
-              zIndex: 250
+              zIndex: 1250
             }),
           }}
         />

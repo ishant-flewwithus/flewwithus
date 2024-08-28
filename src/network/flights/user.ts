@@ -1,6 +1,7 @@
 import ApiResponse from "@/models/ApiResponse";
 import { User } from "@/models/User";
 import Api from "@/util/Api";
+import { profileUpdateValidator } from "@/util/validator";
 import { cookies } from "next/headers";
 
 // Signup by email + pwd or phone
@@ -26,7 +27,7 @@ export const verifySignup = async (
   phone: string | null,
   otp: string | null,
 ) => {
-  const response = await Api.post<ApiResponse<any>>(
+  const response = await Api.post<ApiResponse<User | null>>(
     `/user/verify-signup`,
     {
       provider: provider,
@@ -38,11 +39,8 @@ export const verifySignup = async (
       withCredentials: true,
     },
   );
-  console.log("Res: ", response);
-  console.log("Response Headers:", response.headers);
-  const cookies = response.headers["set-cookie"];
-  console.log("Cookies:", cookies);
-  return response.data.success;
+
+  return response.data.data;
 };
 
 // Get logged in user details
@@ -50,7 +48,7 @@ export const getUser = async () => {
   const response = await Api.get<ApiResponse<User>>(`/user/get-user`, {
     withCredentials: true,
   });
-  
+
   if (response.data.message === "Not authenticated") {
     return null;
   } else {
@@ -58,9 +56,30 @@ export const getUser = async () => {
   }
 };
 
+// Logout
 export const logout = async () => {
-  const response = await Api.post<ApiResponse<User>>(`/user/logout`, {
-    withCredentials: true,
+  const response = await Api.post<ApiResponse<User>>(
+    `/user/logout`,
+    {},
+    {
+      withCredentials: true,
+    },
+  );
+  return response.data.success;
+};
+
+// Update profile
+export const updateProfile = async (
+  _id: string,
+  username: string,
+  dateOfBirth: Date,
+  gender: string,
+) => {
+  const response = await Api.post<ApiResponse<User>>(`/user/update`, {
+    _id,
+    username,
+    dateOfBirth,
+    gender,
   });
   return response.data.success;
 };

@@ -149,7 +149,8 @@ export default function NavBar() {
         // NO-OP
       }
       if (data) {
-        //router.push("/profile");
+        setUser(data);
+        setShowAuthDialog(false);
       }
     } catch (err) {
       toast.error(
@@ -165,9 +166,23 @@ export default function NavBar() {
     try {
       const isSuccess = await UserApi.logout();
       if (isSuccess) {
+        document.cookie = "connect.sid=;"; // TODO: Consider other approach
         setUser(undefined);
         router.push("/");
       }
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
+    }
+  };
+
+  const googleSignIn = async () => {
+    try {
+      window.open(
+        `http://localhost:8000/fwu/api/v1/user/google-signin`,
+        "_self",
+      );
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "An unexpected error occurred",
@@ -222,12 +237,26 @@ export default function NavBar() {
                   LOGIN
                 </span>
               ) : (
-                <span
-                  className="text-xs font-bold lg:text-sm"
-                  onClick={() => logout()}
-                >
-                  LOGOUT
-                </span>
+                <div className="flex items-center space-x-2">
+                  <div
+                    className="relative h-7 w-8 overflow-hidden rounded-full border-2 shadow-sm"
+                    onClick={() => {
+                      router.push("/profile");
+                    }}
+                  >
+                    <Image
+                      src="/user_placeholder.jpg"
+                      fill={true}
+                      alt="profile pic"
+                    />
+                  </div>
+                  <span
+                    className="text-xs font-bold lg:text-sm"
+                    onClick={() => logout()}
+                  >
+                    LOGOUT
+                  </span>
+                </div>
               )}
             </RoundedButtonBase>
           </div>
@@ -261,7 +290,7 @@ export default function NavBar() {
         setOpen={setShowAuthDialog}
         hideCloseButton={true}
       >
-        <div className="relative w-full">
+        <div className="relative h-[600px] w-full">
           {/* BACKGROUND IMAGE */}
           <Image
             src="/auth_bg.webp"
@@ -270,7 +299,7 @@ export default function NavBar() {
             fill={true}
           />
           <div className="absolute inset-0 bg-black opacity-40"></div>
-          <div className="relative z-10 mx-4 bg-opacity-50 p-6">
+          <div className="relative z-10 mx-4 flex h-full w-full items-center justify-center bg-opacity-50 p-6">
             <div className="grid grid-cols-12 gap-2">
               {/* OFFER TEXT */}
               <div className="col-span-6 flex flex-col items-center justify-center gap-4 text-onprimary">
@@ -352,13 +381,15 @@ export default function NavBar() {
 
                     <TextWithBackgroundLine title="Use auth providers" />
                     <CenterBox>
-                      <Image
-                        src="/google_signin.png"
-                        width={43}
-                        height={43}
-                        alt="google sign in"
-                        className="cursor-pointer"
-                      />
+                      <div onClick={() => googleSignIn()}>
+                        <Image
+                          src="/google_signin.png"
+                          width={43}
+                          height={43}
+                          alt="google sign in"
+                          className="cursor-pointer"
+                        />
+                      </div>
 
                       <div className="text-center text-xs">
                         By proceeding in, you agree to Flew With Us&apos;s terms
