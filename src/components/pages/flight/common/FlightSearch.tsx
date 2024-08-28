@@ -483,9 +483,8 @@ export default function FlightSearch() {
                       count={infantCount}
                       setCount={setInfantCount}
                     />
-
                     <div className="col-span-12 md:col-span-6">
-                      <div className="mt-6 text-lg font-semibold">
+                      <div className="text-md mt-6 font-semibold">
                         CHOOSE TRAVEL CLASS
                       </div>
                       <div className="flex items-center justify-between">
@@ -502,7 +501,6 @@ export default function FlightSearch() {
                         </div>
                       </div>
                     </div>
-
                     <div className="col-span-12 flex items-end justify-end md:col-span-6">
                       <div
                         onClick={() => setShowFlightConfigDialog(false)}
@@ -593,7 +591,9 @@ const FlightConfigCounter = ({
 }: FlightConfigCounterProps) => {
   return (
     <div className="col-span-12 select-none rounded-md border border-gray-300 px-6 py-2 md:col-span-4">
-      <div className="my-1 text-center text-base font-semibold">{title}</div>
+      <div className="my-1 text-center text-sm font-semibold md:text-base">
+        {title}
+      </div>
       <div className="border-b-2 pb-2 text-center text-xs font-semibold">
         On the day of travel
       </div>
@@ -608,7 +608,7 @@ const FlightConfigCounter = ({
         >
           <GrSubtract size={13} />
         </div>
-        <div className="text-2xl font-medium">{count}</div>
+        <div className="text-xl font-medium md:text-2xl">{count}</div>
         <div
           className="cursor-pointer p-2"
           onClick={() => {

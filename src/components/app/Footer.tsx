@@ -41,21 +41,23 @@ export default function Footer() {
             </div>
           ))}
         </div>
-        <div className="col-span-12 flex items-start justify-center gap-4 lg:col-span-4 z-[2]">
+        <div className="z-[2] col-span-12 flex items-start justify-center gap-4 lg:col-span-4">
           <a href="#">
             <Image
               src="/apple_download.png"
-              width={167}
+              width={126}
               height={58}
               alt="apple app"
+              className="md:w-40"
             />
           </a>
           <a href="#">
             <Image
               src="/playstore_download.png"
-              width={167}
+              width={126}
               height={58}
               alt="google app"
+              className="md:w-40"
             />
           </a>
         </div>

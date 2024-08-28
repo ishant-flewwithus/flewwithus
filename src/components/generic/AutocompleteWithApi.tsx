@@ -73,15 +73,17 @@ function AutocompleteWithApi<T>({
               <input
                 type="text"
                 placeholder={label1}
-                className="w-full border-none outline-none"
+                className="w-32 border-none outline-none md:w-full"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />
             </div>
           </div>
           <div className="p-2">
-            <div className="mt-2 text-base text-gray-600">{label2}</div>
-            <div className="mt-2 max-h-60 overflow-y-auto scrollbar-thin">
+            <div className="md:text-md mt-2 text-lg text-gray-600 md:h-full">
+              {label2}
+            </div>
+            <div className="max-h-55 mt-2 overflow-y-auto scrollbar-thin">
               <div>
                 {isLoading ? (
                   <div className="flex h-full min-h-20 w-full items-center justify-center">
@@ -118,7 +120,9 @@ function AutocompleteWithApi<T>({
                         </div>
                       ))
                     ) : (
-                      <div style={{ padding: "5px" }}>No results</div>
+                      <div className="text-md" style={{ padding: "5px" }}>
+                        No results
+                      </div>
                     )}
                   </>
                 )}

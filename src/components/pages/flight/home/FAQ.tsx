@@ -94,7 +94,7 @@ export default function Features() {
           {faqCarouselData.map((item, index) => (
             <div key={index} className="overflow-hidden px-2 py-2 md:px-8">
               <div className="w-full self-stretch rounded-xl bg-[#F1F9FF] px-2 py-4 md:px-8">
-                <div className="text-xl font-semibold">
+                <div className="text-lg font-semibold md:text-xl">
                   Q{index + 1}. {item.title}
                 </div>
                 <div className="mt-2 text-sm">{item.description}</div>
