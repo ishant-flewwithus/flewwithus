@@ -28,6 +28,10 @@ import {
 } from "@/util/validation/validateFlight";
 import CircularProgressBar from "@/components/generic/CircularProgress";
 import { isValidJSON } from "@/util/validation/validateString";
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from "@/util/localStorageUtil";
 
 const navLinks = [
   {
@@ -107,8 +111,8 @@ export default function FlightSearch() {
 
   const [flightMode, setFlightMode] = useState("1");
 
-  const [fromAirport, setFromAirport] = useState<AirportDBItem>();
-  const [toAirport, setToAirport] = useState<AirportDBItem>();
+  const [fromAirport, setFromAirport] = useState<AirportDBItem | null>();
+  const [toAirport, setToAirport] = useState<AirportDBItem | null>();
 
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(addDays(new Date(), 7));
@@ -154,12 +158,12 @@ export default function FlightSearch() {
       if (flightMode === "1") {
         // One way trip
         router.push(
-          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}&FromAirport=${JSON.stringify(fromAirport)}&ToAirport=${JSON.stringify(toAirport)}`,
+          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}`,
         );
       } else if (flightMode === "2") {
         // Return trip
         router.push(
-          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}&ReturnArrivalDate=${toDate}&ReturnDepartureDate=${toDate}&ReturnFlightCabinClass=${flightClass.value}&FromAirport=${JSON.stringify(fromAirport)}&ToAirport=${JSON.stringify(toAirport)}`,
+          `/flights/search?AdultCount=${adultCount}&ChildCount=${childrenCount}&InfantCount=${infantCount}&JourneyType=${flightMode}&Origin=${fromAirport?.AIRPORTCODE}&Destination=${toAirport?.AIRPORTCODE}&FlightCabinClass=${flightClass.value}&DepartureDate=${format(fromDate, "yyyy-MM-dd")}&ArrivalDate=${format(fromDate, "yyyy-MM-dd")}&FromCity=${fromAirport?.CITYNAME}&ToCity=${toAirport?.CITYNAME}&ReturnArrivalDate=${toDate}&ReturnDepartureDate=${toDate}&ReturnFlightCabinClass=${flightClass.value}`,
         );
       } else {
         throw new Error("Invalid journey type");
@@ -175,10 +179,10 @@ export default function FlightSearch() {
 
   const setupDefaultFaluesFromSearchParams = () => {
     const params = {
-      AdultCount: searchParams.get("AdultCount") || "0",
+      AdultCount: searchParams.get("AdultCount") || "1",
       ChildCount: searchParams.get("ChildCount") || "0",
       InfantCount: searchParams.get("InfantCount") || "0",
-      JourneyType: searchParams.get("JourneyType") || "0",
+      JourneyType: searchParams.get("JourneyType") || "1",
       Origin: searchParams.get("Origin") || "",
       Destination: searchParams.get("Destination") || "",
       DepartureDate: searchParams.get("DepartureDate") || "",
@@ -186,33 +190,25 @@ export default function FlightSearch() {
       FromCity: searchParams.get("FromCity") || "",
       ToCity: searchParams.get("ToCity") || "",
       FlightCabinClass: searchParams.get("FlightCabinClass") || "1",
-      ReturnDepartureDate: searchParams.get("ReturnDepartureDate") || "1",
-      ReturnArrivalDate: searchParams.get("ReturnArrivalDate") || "1",
-      FromAirport: searchParams.get("FromAirport") || "{}",
-      ToAirport: searchParams.get("ToAirport") || "{}",
+      ReturnDepartureDate: searchParams.get("ReturnDepartureDate") || "",
+      ReturnArrivalDate: searchParams.get("ReturnArrivalDate") || "",
     };
     setAdultCount(parseInt(params.AdultCount) || 1);
     setChildrenCount(parseInt(params.ChildCount) || 0);
     setInfantCount(parseInt(params.InfantCount) || 0);
-    setFlightMode(params.JourneyType || "1");
-
-    let _fromAirport = params.FromAirport;
-    let _isFromAirportAValidJSON = isValidJSON(_fromAirport);
-    let _isFromAirportAAirportDBItem = isAirportDBItem(
-      _isFromAirportAValidJSON,
+    setFlightMode(
+      ["1", "2"].includes(params.JourneyType) ? params.JourneyType : "1",
     );
 
-    setFromAirport(
-      _isFromAirportAAirportDBItem ? JSON.parse(params.FromAirport) : undefined,
-    );
+    let _fromAirport = getLocalStorageItem<AirportDBItem>("fromFlightOrigin");
+    let _isFromAirportAAirportDBItem = isAirportDBItem(_fromAirport);
 
-    let _toAirport = params.ToAirport;
-    let _isToAirportAValidJSON = isValidJSON(_toAirport);
-    let _isToAirportAAirportDBItem = isAirportDBItem(_isToAirportAValidJSON);
+    setFromAirport(_isFromAirportAAirportDBItem ? _fromAirport : null);
 
-    setToAirport(
-      _isToAirportAAirportDBItem ? JSON.parse(params.ToAirport) : undefined,
-    );
+    let _toAirport = getLocalStorageItem<AirportDBItem>("toFlightOrigin");
+    let _isToAirportAAirportDBItem = isAirportDBItem(_toAirport);
+
+    setToAirport(_isToAirportAAirportDBItem ? _toAirport : null);
 
     setFromDate(
       isValid(parseISO(params.ArrivalDate))
@@ -298,6 +294,10 @@ export default function FlightSearch() {
                 fetchUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setFromAirport(airport);
+                  setLocalStorageItem<AirportDBItem>(
+                    "fromFlightOrigin",
+                    airport,
+                  );
                 }}
                 placeholder="Search for airports"
                 trigger={(selectedItem) => (
@@ -361,6 +361,7 @@ export default function FlightSearch() {
                 fetchUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home/airportbycode/?code=`}
                 onSelect={(airport) => {
                   setToAirport(airport);
+                  setLocalStorageItem<AirportDBItem>("toFlightOrigin", airport);
                 }}
                 placeholder="Search for airports"
                 trigger={(selectedItem) => (
