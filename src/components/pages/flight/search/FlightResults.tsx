@@ -4,9 +4,11 @@ import { Airport, FlightSearchResult } from "@/models/Flight";
 import { formatMinutes } from "@/util/dateFormatter";
 import { format } from "date-fns";
 import Image from "next/image";
+import { useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { IoFilterOutline } from "react-icons/io5";
 import { MdFlightTakeoff } from "react-icons/md";
+import Dialog from "@/components/generic/Dialog";
 
 interface FlightResultsProps {
   setShowFiltersOnMobile: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,6 +25,7 @@ export default function FlightResults({
   fromCity,
   toCity,
 }: FlightResultsProps) {
+  const [showFareDialog, setShowFareDialog] = useState(false);
   return (
     <>
       <div className="col-span-12 xl:col-span-9">
@@ -100,12 +103,12 @@ export default function FlightResults({
                       </div>
                     </div>
 
-                  <div className="col-span-2">
-                    <div className="border-b-4 border-b-primary-500 pb-2 text-center text-sm">
-                      {formatMinutes(item.Segments[0][0].Duration)}
+                    <div className="col-span-2">
+                      <div className="border-b-4 border-b-primary-500 pb-2 text-center text-sm">
+                        {formatMinutes(item.Segments[0][0].Duration)}
+                      </div>
+                      <div className="pt-2 text-center text-sm">Non-Stop</div>
                     </div>
-                    <div className="pt-2 text-center text-sm">Non-Stop</div>
-                  </div>
 
                     <div className="col-span-2">
                       <div className="text-lg font-semibold">
@@ -116,7 +119,7 @@ export default function FlightResults({
 
                     <div className="col-span-2">
                       <div
-                        className="cursor-pointer rounded-full bg-primary-500 px-6 py-1 text-center text-center text-onprimary hover:bg-primary-600 lg:mt-6 2xl:mt-4"
+                        className="cursor-pointer rounded-full bg-primary-500 px-6 py-1 text-center text-onprimary hover:bg-primary-600 lg:mt-6 2xl:mt-4"
                         onClick={() => setShowFareDialog(true)}
                       >
                         View Prices

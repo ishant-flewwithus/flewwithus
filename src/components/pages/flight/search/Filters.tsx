@@ -3,14 +3,14 @@ import Slider from "@/components/generic/Slider";
 import Stack from "@/components/generic/Stack";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import MorningEnabledIcon from "@/assets/morning_enabled.svg";
-import MorningDisabledIcon from "@/assets/morning_disabled.svg";
-import NoonEnabledIcon from "@/assets/noon_enabled.svg";
-import NoonDisabledIcon from "@/assets/noon_disabled.svg";
-import EveningEnabledIcon from "@/assets/evening_enabled.svg";
-import EveningDisabledIcon from "@/assets/evening_disabled.svg";
-import NightEnabledIcon from "@/assets/night_enabled.svg";
-import NightDisabledIcon from "@/assets/night_disabled.svg";
+import MorningEnabledIcon from "@/assets/MorningEnabledIcon.svg";
+import MorningDisabledIcon from "@/assets/MorningDisabledIcon.svg";
+import NoonEnabledIcon from "@/assets/NoonEnabledIcon.svg";
+import NoonDisabledIcon from "@/assets/NoonDisabledIcon.svg";
+import EveningEnabledIcon from "@/assets/EveningEnabledIcon.svg";
+import EveningDisabledIcon from "@/assets/EveningDisabledIcon.svg";
+import NightEnabledIcon from "@/assets/NightEnabledIcon.svg";
+import NightDisabledIcon from "@/assets/NightDisabledIcon.svg";
 import { IoClose } from "react-icons/io5";
 import {
   AirlineFilter,
