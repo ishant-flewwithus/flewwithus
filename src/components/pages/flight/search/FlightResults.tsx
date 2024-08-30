@@ -26,7 +26,7 @@ export default function FlightResults({
   return (
     <div className="col-span-12 xl:col-span-9">
       <div className="flex items-center justify-between">
-        <div className="text-2xl">
+        <div className="text-xl md:text-2xl">
           Flights from {fromCity} to {toCity}{" "}
           <span className="font-medium">( {flights?.length} Flights )</span>
         </div>
@@ -49,7 +49,7 @@ export default function FlightResults({
             {flights?.map((item, index) => (
               <div key={index}>
                 {/* PC ITEM */}
-                <div className="mt-4 hidden rounded-md bg-onprimary p-6 shadow-sm lg:grid lg:grid-cols-12 lg:gap-6">
+                <div className="mt-4 hidden rounded-md bg-onprimary p-6 shadow-md lg:grid lg:grid-cols-12 lg:gap-6">
                   <div className="col-span-2 flex gap-4">
                     <div className="flex items-center">
                       <div className="w-50 h-50 rounded-xl bg-primary-500 p-2 text-white">
@@ -65,7 +65,7 @@ export default function FlightResults({
                   </div>
 
                   <div className="col-span-2">
-                    <div className="text-xl font-semibold">
+                    <div className="text-lg font-semibold">
                       {format(item.Segments[0][0].Origin.DepTime, "hh:mm aa")}
                     </div>
                     <div className="text-sm">
@@ -76,7 +76,7 @@ export default function FlightResults({
                   </div>
 
                   <div className="col-span-2">
-                    <div className="text-xl font-semibold">
+                    <div className="text-lg font-semibold">
                       {format(
                         item.Segments[0][0].Destination.ArrTime,
                         "hh:mm aa",
@@ -97,20 +97,20 @@ export default function FlightResults({
                   </div>
 
                   <div className="col-span-2">
-                    <div className="text-xl font-semibold">
+                    <div className="text-lg font-semibold">
                       {item?.Fare?.Currency} {item?.Fare?.OfferedFare}
                     </div>
                     <div className="text-sm">per adult</div>
                   </div>
 
                   <div className="col-span-2">
-                    <div className="cursor-pointer rounded-full bg-primary-500 px-6 py-1 text-onprimary hover:bg-primary-600">
+                    <div className="cursor-pointer rounded-full bg-primary-500 px-6 py-1 text-center text-onprimary hover:bg-primary-600 lg:mt-6 2xl:mt-4">
                       View Prices
                     </div>
                   </div>
                 </div>
                 {/* MOBILE ITEM */}
-                <div className="mt-4 block rounded-md bg-onprimary p-6 shadow-sm lg:hidden">
+                <div className="mt-4 block rounded-md bg-onprimary p-6 shadow-md lg:hidden">
                   <div className="text-center text-2xl font-semibold">
                     {item.Segments[0][0].Airline.AirlineName}
                   </div>
@@ -119,29 +119,29 @@ export default function FlightResults({
                   </div>
                   <div className="mt-6 grid grid-cols-12 gap-4 text-center">
                     <div className="col-span-4">
-                      <div className="text-lg font-bold">
+                      <div className="text-md font-bold">
                         {format(item.Segments[0][0].Origin.DepTime, "hh:mm aa")}
                       </div>
-                      <div className="text-sm">
+                      <div className="text-xs">
                         {item.Segments[0][0].Origin.Airport.AirportName}{" "}
                         {item.Segments[0][0].Origin.Airport.CityName}{" "}
                         {item.Segments[0][0].Origin.Airport.CountryName}
                       </div>
                     </div>
                     <div className="col-span-4">
-                      <div className="border-b-2 border-b-green-500 pb-1 text-sm font-bold">
+                      <div className="border-b-2 border-b-green-500 pb-1 text-sm font-medium">
                         {formatMinutes(item.Segments[0][0].Duration)}
                       </div>
                       <div className="pt-2 text-xs font-medium">1 STOP</div>
                     </div>
                     <div className="col-span-4">
-                      <div className="text-lg font-bold">
+                      <div className="text-md font-bold">
                         {format(
                           item.Segments[0][0].Destination.ArrTime,
                           "hh:mm aa",
                         )}
                       </div>
-                      <div className="text-sm">
+                      <div className="text-xs">
                         {" "}
                         {
                           item.Segments[0][0].Destination.Airport.AirportName
@@ -152,13 +152,13 @@ export default function FlightResults({
                     </div>
                   </div>
                   <div className="mt-4 grid cursor-pointer grid-cols-12 rounded-full bg-primary-500 px-4 py-2 text-onprimary">
-                    <div className="col-span-4 text-start font-semibold line-through opacity-65">
+                    <div className="col-span-5 text-start text-sm font-semibold line-through opacity-65">
                       {item?.Fare?.Currency} {item?.Fare?.OfferedFare}
                     </div>
-                    <div className="col-span-4 text-end font-semibold">
+                    <div className="col-span-6 pr-1 text-right text-sm font-semibold">
                       {item?.Fare?.Currency} {item?.Fare?.OfferedFare}
                     </div>
-                    <div className="col-span-4 flex items-center justify-end">
+                    <div className="col-span-1 flex items-center justify-end">
                       <FaArrowRightLong size={20} />
                     </div>
                   </div>

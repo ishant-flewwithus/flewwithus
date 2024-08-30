@@ -106,7 +106,7 @@ export default function Filters({
 
   return (
     <div
-      className={`${showFiltersOnMobile ? "fixed" : "hidden"} bottom-0 left-0 right-0 top-0 z-[200] col-span-12 w-screen overflow-y-auto bg-onprimary p-4 xl:col-span-3 xl:block xl:w-auto`}
+      className={`${showFiltersOnMobile ? "fixed" : "hidden"} bottom-0 left-0 right-0 top-0 z-[200] col-span-12 w-screen overflow-y-auto bg-onprimary p-4 sm:shadow-md xl:col-span-3 xl:block xl:w-auto`}
     >
       <Stack direction="vertical" gap={20}>
         <div className="flex items-center justify-between px-2">
@@ -167,74 +167,86 @@ export default function Filters({
 
         {/* DEPARTURE FILTER */}
         <FormBox title="Departure Time">
-          <div className="flex items-center gap-4">
-            <FlightTimeFilterButton
-              label="6am - 12pm"
-              enabledIcon={MorningEnabledIcon}
-              disabledIcon={MorningDisabledIcon}
-              iconWidth={100}
-              iconHeight={100}
-              value="morning"
-              flightTimeRange={flightTimeRange}
-              setFlightTimeRange={setFlightTimeRange}
-            />
-            <FlightTimeFilterButton
-              label="12am - 6pm"
-              enabledIcon={NoonEnabledIcon}
-              disabledIcon={NoonDisabledIcon}
-              iconWidth={30}
-              iconHeight={30}
-              value="noon"
-              flightTimeRange={flightTimeRange}
-              setFlightTimeRange={setFlightTimeRange}
-            />
-            <FlightTimeFilterButton
-              label="6pm - 12am"
-              enabledIcon={EveningEnabledIcon}
-              disabledIcon={EveningDisabledIcon}
-              iconWidth={120}
-              iconHeight={120}
-              value="evening"
-              flightTimeRange={flightTimeRange}
-              setFlightTimeRange={setFlightTimeRange}
-            />
-            <FlightTimeFilterButton
-              label="12am - 6pm"
-              enabledIcon={NightEnabledIcon}
-              disabledIcon={NightDisabledIcon}
-              iconWidth={25}
-              iconHeight={25}
-              value="night"
-              flightTimeRange={flightTimeRange}
-              setFlightTimeRange={setFlightTimeRange}
-            />
+          <div className="grid grid-cols-12 items-center gap-4 text-center">
+            <div className="col-span-6">
+              <FlightTimeFilterButton
+                label="6am - 12pm"
+                enabledIcon={MorningEnabledIcon}
+                disabledIcon={MorningDisabledIcon}
+                iconWidth={60}
+                iconHeight={60}
+                value="morning"
+                flightTimeRange={flightTimeRange}
+                setFlightTimeRange={setFlightTimeRange}
+              />
+            </div>
+            <div className="col-span-6">
+              <FlightTimeFilterButton
+                label="12pm - 6pm"
+                enabledIcon={NoonEnabledIcon}
+                disabledIcon={NoonDisabledIcon}
+                iconWidth={35}
+                iconHeight={35}
+                value="noon"
+                flightTimeRange={flightTimeRange}
+                setFlightTimeRange={setFlightTimeRange}
+              />
+            </div>
+            <div className="col-span-6">
+              <FlightTimeFilterButton
+                label="6pm - 12am"
+                enabledIcon={EveningEnabledIcon}
+                disabledIcon={EveningDisabledIcon}
+                iconWidth={85}
+                iconHeight={85}
+                value="evening"
+                flightTimeRange={flightTimeRange}
+                setFlightTimeRange={setFlightTimeRange}
+              />
+            </div>
+            <div className="col-span-6">
+              <FlightTimeFilterButton
+                label="12am - 6pm"
+                enabledIcon={NightEnabledIcon}
+                disabledIcon={NightDisabledIcon}
+                iconWidth={29}
+                iconHeight={29}
+                value="night"
+                flightTimeRange={flightTimeRange}
+                setFlightTimeRange={setFlightTimeRange}
+              />
+            </div>
           </div>
         </FormBox>
 
         {/* FLIGHT FILTERS */}
         {airlineFilters?.length > 0 && (
           <FormBox title="Airlines">
-            {airlineFilters?.map((item, index) => (
-              <FormInputCheckbox
-                key={index}
-                label={item.airline.AirlineName}
-                checked={item.isSelected}
-                onChange={(e) =>
-                  setAirlineFilters(
-                    airlineFilters.map((a) => {
-                      if (item.airline.AirlineCode === a.airline.AirlineCode) {
-                        return {
-                          ...a,
-                          isSelected: e.target.checked,
-                        };
-                      } else {
-                        return a;
-                      }
-                    }),
-                  )
-                }
-              />
-            ))}
+            <div className="grid gap-4">
+              {airlineFilters?.map((item, index) => (
+                <FormInputCheckbox
+                  key={index}
+                  label={item.airline.AirlineName}
+                  checked={item.isSelected}
+                  onChange={(e) =>
+                    setAirlineFilters(
+                      airlineFilters.map((a) => {
+                        if (
+                          item.airline.AirlineCode === a.airline.AirlineCode
+                        ) {
+                          return {
+                            ...a,
+                            isSelected: e.target.checked,
+                          };
+                        } else {
+                          return a;
+                        }
+                      }),
+                    )
+                  }
+                />
+              ))}
+            </div>
           </FormBox>
         )}
 
