@@ -93,11 +93,11 @@ export default function FlightBookingPage() {
   return (
     <Page
       headerChild={
-        <div className="grid grid-cols-12 gap-4 rounded-lg bg-onprimary p-4">
+        <div className="grid grid-cols-12 items-center gap-4 rounded-lg bg-onprimary p-4">
           <div className="col-span-6 text-2xl font-semibold lg:col-span-3">
             Fare Summary:
           </div>
-          <div className="col-span-6 flex flex-col items-end justify-end lg:col-span-3 lg:block">
+          <div className="text-md col-span-6 flex flex-col items-start justify-end sm:items-end lg:col-span-3 lg:block">
             <div>
               <span className="font-bold">Base Fare:</span> ₹ 2,925
             </div>
@@ -110,7 +110,7 @@ export default function FlightBookingPage() {
             <div>Airline Taxes and Surcharges (1 x ₹ 17,564)</div>
           </div>
           <div className="col-span-3 hidden lg:block">
-            <div className="text-xl font-bold text-primary-900">
+            <div className="text-lg font-bold text-primary-900">
               Total Amount ₹ 2,925
             </div>
             <div>The airfare has increased by ₹ 4,105</div>
@@ -123,14 +123,14 @@ export default function FlightBookingPage() {
         {/* FLIGHT FROM AND TO */}
         <div className="block items-center justify-between lg:flex">
           <div className="block items-center gap-4 lg:flex">
-            <div className="flex items-center gap-2 border-l-4 border-l-primary-500 pl-2 text-2xl font-semibold lg:text-xl">
+            <div className="flex items-center gap-2 border-l-4 border-l-primary-500 pl-2 text-xl font-semibold lg:text-2xl">
               New Delhi <FaArrowRightLong /> Bengaluru
             </div>
             <div className="mt-2 inline-block rounded-full bg-primary-500 px-4 py-2 text-sm text-onprimary lg:mt-0 lg:block">
               Wednesday, May 22 • Non Stop • 2h 45m
             </div>
           </div>
-          <div className="mt-2 hidden items-center gap-4 lg:mt-0 lg:flex">
+          <div className="ml-2 mt-2 hidden items-center gap-4 lg:mt-0 lg:flex">
             <div className="font-medium text-textheading">
               Economy &gt; Flex
             </div>
@@ -235,12 +235,14 @@ export default function FlightBookingPage() {
             Log in to view your saved traveller list, unlock amazing deals &
             much more!
           </div>
-          <div className="cursor-pointer">LOGIN NOW</div>
+          <div className="center cursor-pointer rounded border-2 border-primary-500 border-opacity-80 bg-primary-100 bg-opacity-40 p-2">
+            LOGIN NOW
+          </div>
         </div>
         <div className="mt-4 rounded-lg bg-background p-4">
           <div>
-            Important: Enter name as mentioned on your passport or Government
-            approved IDs.
+            <span className="font-semibold">Important: </span>
+            Enter name as mentioned on your passport or Government approved IDs.
           </div>
           <div>
             Please ensure that the Frequent Flyer No entered here is against the
@@ -314,15 +316,17 @@ export default function FlightBookingPage() {
           <div className="mt-4 grid grid-cols-12 gap-4">
             {tripFeatures?.map((item, index) => (
               <div
-                className="col-span-12 lg:col-span-4 flex cursor-pointer items-center gap-4 rounded-md bg-onprimary p-4"
+                className="col-span-12 flex cursor-pointer items-center gap-4 rounded-md bg-onprimary p-4 lg:col-span-4"
                 key={index}
               >
                 <div className="rounded-md bg-primary-100 p-2 text-2xl text-primary-700">
                   {item.icon}
                 </div>
                 <div className="flex-1">
-                  <div className="text-lg font-semibold">{item.title}</div>
-                  <div>{item.caption}</div>
+                  <div className="text-md font-semibold md:text-lg">
+                    {item.title}
+                  </div>
+                  <div className="md:text-md text-sm">{item.caption}</div>
                 </div>
               </div>
             ))}
