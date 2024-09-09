@@ -23,7 +23,7 @@ export default function TextField({
   return (
     <div>
       <label
-        className={`mb-2 block ${labelSize === "large" ? "text-xl" : "text-sm"} ${labelColor === "primary" ? "text-primary-500" : ""}`}
+        className={`mb-2 block ${labelSize === "large" ? "text-xl" : labelSize === "medium" ? "text-lg" : labelSize === "small" ? "text-md" : "text-sm"} ${labelColor === "primary" ? "text-primary-500" : labelColor === "black" ? "text-black" : ""} `}
       >
         {label}
       </label>
@@ -31,7 +31,7 @@ export default function TextField({
         <input
           type={type}
           placeholder={placeholder || "Enter " + label}
-          className={`${variant === "outlined" ? "w-full rounded-full border border-gray-300 px-6 py-3 outline-none" : "w-full bg-background rounded-full border border-background px-6 py-[15px] outline-none"}`}
+          className={`${variant === "outlined" ? "w-full rounded-full border border-gray-300 px-6 py-3 outline-none" : "w-full rounded-full border border-background bg-background px-6 py-[15px] outline-none"}`}
           {...props}
         />
       </div>
