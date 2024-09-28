@@ -1,10 +1,11 @@
 "use client";
 import CircularProgressBar from "@/components/generic/CircularProgress";
 import Dialog from "@/components/generic/Dialog";
-import { Airport, FlightSearchResult } from "@/models/Flight";
+import { Airport, FlightDetails } from "@/models/Flight";
 import { formatMinutes } from "@/util/dateFormatter";
 import { format } from "date-fns";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { IoFilterOutline } from "react-icons/io5";
@@ -12,7 +13,7 @@ import { MdFlightTakeoff } from "react-icons/md";
 
 interface FlightResultsProps {
   setShowFiltersOnMobile: React.Dispatch<React.SetStateAction<boolean>>;
-  flights: FlightSearchResult[];
+  flights: FlightDetails[];
   loading: boolean;
   fromCity: string | null;
   toCity: string | null;
@@ -26,6 +27,8 @@ export default function FlightResults({
   toCity,
 }: FlightResultsProps) {
   const [showFareDialog, setShowFareDialog] = useState(false);
+
+  const router = useRouter()
 
   return (
     <>
@@ -73,47 +76,50 @@ export default function FlightResults({
                       </div>
                       <div>
                         <div className="text-xl font-semibold">
-                          {item.Segments[0][0].Airline.AirlineName}
+                          {item.outBound[0].airlineName}
                         </div>
-                        <div>{item.Segments[0][0].Airline.FlightNumber}</div>
+                        <div>{item.outBound[0].flightNumber}</div>
                       </div>
                     </div>
 
                     <div className="col-span-2">
                       <div className="text-xl font-semibold">
-                        {format(item.Segments[0][0].Origin.DepTime, "hh:mm aa")}
+                        {format(item.outBound[0].arrivalTime, "hh:mm aa")}
                       </div>
                       <div className="text-sm">
-                        {item.Segments[0][0].Origin.Airport.AirportName}{" "}
-                        {item.Segments[0][0].Origin.Airport.CityName}{" "}
-                        {item.Segments[0][0].Origin.Airport.CountryName}
+                        {item.outBound[0].originAirportName}{" "}
+                        {item.outBound[0].originCityName}
+                        {/* TODO: Add Country */}
+                        {/* {item.outBound[0].originCountryName} */}
                       </div>
                     </div>
 
                     <div className="col-span-2">
                       <div className="text-xl font-semibold">
-                        {format(
-                          item.Segments[0][0].Destination.ArrTime,
-                          "hh:mm aa",
-                        )}
+                        {format(item.outBound[0].arrivalTime, "hh:mm aa")}
                       </div>
                       <div className="text-sm">
-                        {item.Segments[0][0].Destination.Airport.AirportName}{" "}
-                        {item.Segments[0][0].Destination.Airport.CityName}{" "}
-                        {item.Segments[0][0].Destination.Airport.CountryName}
+                        {item.outBound[0].destinationAirportName}{" "}
+                        {item.outBound[0].destinationCityName}{" "}
+                        {/* TODO: Add Country */}
+                        {/* {item.outBound[0].originCountryName} */}
                       </div>
                     </div>
 
                     <div className="col-span-2">
                       <div className="border-b-4 border-b-primary-500 pb-2 text-center text-sm">
-                        {formatMinutes(item.Segments[0][0].Duration)}
+                        {formatMinutes(item.outBound[0].duration)}
                       </div>
-                      <div className="pt-2 text-center text-sm">Non-Stop</div>
+                      <div className="pt-2 text-center text-sm">
+                        {item.outBound.length > 1
+                          ? `${item.outBound.length - 1} Stops`
+                          : "Non-Stop"}
+                      </div>
                     </div>
 
                     <div className="col-span-2">
                       <div className="text-xl font-semibold">
-                        {item?.Fare?.Currency} {item?.Fare?.OfferedFare}
+                        {item.fare.Currency} {item.fare.OfferedFare}
                       </div>
                       <div className="text-sm">per adult</div>
                     </div>
@@ -121,7 +127,9 @@ export default function FlightResults({
                     <div className="col-span-2">
                       <div
                         className="cursor-pointer rounded-full bg-primary-500 px-6 py-1 text-center text-onprimary hover:bg-primary-600"
-                        onClick={() => setShowFareDialog(true)}
+                        onClick={() => {
+                          router.push(`/flights/book?resultIndex=${item.resultIndex}`)
+                        }}
                       >
                         View Prices
                       </div>
@@ -130,54 +138,48 @@ export default function FlightResults({
                   {/* MOBILE ITEM */}
                   <div className="mt-4 block rounded-md bg-onprimary p-6 shadow-sm lg:hidden">
                     <div className="text-center text-2xl font-semibold">
-                      {item.Segments[0][0].Airline.AirlineName}
+                      {item.outBound[0].airlineName}
                     </div>
                     <div className="text-center text-sm font-medium">
-                      {item.Segments[0][0].Airline.FlightNumber}
+                      {item.outBound[0].flightNumber}
                     </div>
                     <div className="mt-6 grid grid-cols-12 gap-4 text-center">
                       <div className="col-span-4">
                         <div className="text-lg font-bold">
-                          {format(
-                            item.Segments[0][0].Origin.DepTime,
-                            "hh:mm aa",
-                          )}
+                          {format(item.outBound[0].departureTime, "hh:mm aa")}
                         </div>
                         <div className="text-sm">
-                          {item.Segments[0][0].Origin.Airport.AirportName}{" "}
-                          {item.Segments[0][0].Origin.Airport.CityName}{" "}
-                          {item.Segments[0][0].Origin.Airport.CountryName}
+                          {item.outBound[0].originAirportName}{" "}
+                          {item.outBound[0].originCityName}{" "}
+                          {/* TODO: Add country */}
                         </div>
                       </div>
                       <div className="col-span-4">
                         <div className="border-b-2 border-b-green-500 pb-1 text-sm font-bold">
-                          {formatMinutes(item.Segments[0][0].Duration)}
+                          {formatMinutes(item.outBound[0].duration)}
                         </div>
-                        <div className="pt-2 text-xs font-medium">1 STOP</div>
+                        <div className="pt-2 text-xs font-medium">
+                          {item.outBound.length - 1} Stops
+                        </div>
                       </div>
                       <div className="col-span-4">
                         <div className="text-lg font-bold">
-                          {format(
-                            item.Segments[0][0].Destination.ArrTime,
-                            "hh:mm aa",
-                          )}
+                          {format(item.outBound[0].arrivalTime, "hh:mm aa")}
                         </div>
                         <div className="text-sm">
                           {" "}
-                          {
-                            item.Segments[0][0].Destination.Airport.AirportName
-                          }{" "}
-                          {item.Segments[0][0].Destination.Airport.CityName}{" "}
-                          {item.Segments[0][0].Destination.Airport.CountryName}
+                          {item.outBound[0].destinationAirportName}{" "}
+                          {item.outBound[0].destinationCityName}{" "}
+                          {/* TODO: Add country */}
                         </div>
                       </div>
                     </div>
                     <div className="mt-4 grid cursor-pointer grid-cols-12 rounded-full bg-primary-500 px-4 py-2 text-onprimary">
                       <div className="col-span-4 text-start font-semibold line-through opacity-65">
-                        {item?.Fare?.Currency} {item?.Fare?.OfferedFare}
+                        {item?.fare?.Currency} {item?.fare?.OfferedFare}
                       </div>
                       <div className="col-span-4 text-end font-semibold">
-                        {item?.Fare?.Currency} {item?.Fare?.OfferedFare}
+                        {item?.fare?.Currency} {item?.fare?.OfferedFare}
                       </div>
                       <div className="col-span-4 flex items-center justify-end">
                         <FaArrowRightLong size={20} />

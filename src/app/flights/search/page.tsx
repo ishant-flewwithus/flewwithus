@@ -20,25 +20,34 @@ import Filters from "@/components/pages/flight/search/Filters";
 import FlightResults from "@/components/pages/flight/search/FlightResults";
 import { z } from "zod";
 import { toast } from "react-toastify";
-import {
-  AirlineFilter,
-  FlightFilter,
-  FlightSearchResult,
-} from "@/models/Flight";
+
 import { useDebounce } from "react-use";
 import { roundUpToNearest500 } from "@/util/math";
 import { validateFlightSearchParams } from "@/util/validation/validateFlight";
 import { getDateWithTime, isTimeBefore } from "@/util/dateFormatter";
+import { Airline, FlightDetails, SegmentDetails } from "@/models/Flight";
+
+interface FlightFilter {
+  id: string;
+  title: string;
+  value: boolean;
+}
+
+interface AirlineFilter {
+  airline: SegmentDetails;
+  isSelected: boolean;
+}
 
 export default function FlightSearchPage() {
   const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<FlightSearchResult[]>([]); // All results
-  const [filteredData, setFilteredData] = useState<FlightSearchResult[]>([]); // Frontend filtered results
+
+  const [data, setData] = useState<FlightDetails[]>([]); // All results
+  const [filteredData, setFilteredData] = useState<FlightDetails[]>([]); // Frontend filtered results
   const [showFiltersOnMobile, setShowFiltersOnMobile] = useState(false);
 
-  // Filters
+  // FILTER: Direct Flight | Stop Flight
   const [filters, setFilters] = useState<FlightFilter[]>([
     {
       title: "Direct Flight",
@@ -51,15 +60,22 @@ export default function FlightSearchPage() {
       value: false,
     },
   ]);
+
+  // FILTER: Price Min, Max
   const [priceFilter, setPriceFilter] = useState(0);
   const [minPriceFilter, setMinPriceFilter] = useState(0);
   const [maxPriceFilter, setMaxPriceFilter] = useState(10000);
+
+  // FILTER: Airline Vistara | AirIndia etc etc
   const [airlineFilters, setAirlineFilters] = useState<AirlineFilter[]>([]);
+
+  // FILTER: morning | noon | evening | night
   const [flightTimeRange, setFlightTimeRange] = useState<string | undefined>(
     "morning",
   );
 
   // Get flights
+  // Get flight params from url
   const params = {
     AdultCount: searchParams.get("AdultCount") || "0",
     ChildCount: searchParams.get("ChildCount") || "0",
@@ -74,8 +90,10 @@ export default function FlightSearchPage() {
     FlightCabinClass: searchParams.get("FlightCabinClass") || "1",
   };
 
+  // Flight search api
   const searchFlights = async () => {
     try {
+      // Clear initial states
       setData([]);
       setFilteredData([]);
       setLoading(true);
@@ -83,6 +101,7 @@ export default function FlightSearchPage() {
       // Validate params and throw error if validation fails
       validateFlightSearchParams(params);
 
+      // Hit flight search api
       const results = await FlightApi.searchFlights({
         AdultCount: params.AdultCount,
         ChildCount: params.ChildCount,
@@ -96,8 +115,8 @@ export default function FlightSearchPage() {
       });
 
       console.log("Flight Results:", results);
-      setData(results || []);
-      setFilteredData(results || []);
+      setData(results || []); // This state contains original data
+      setFilteredData(results || []); // This state contains filtered data
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "An unexpected error occurred",
@@ -111,20 +130,20 @@ export default function FlightSearchPage() {
     if (data?.length > 0) {
       // Since prices are sorted by default in price asc order
       setMaxPriceFilter(
-        roundUpToNearest500(data[data.length - 1]?.Fare?.OfferedFare),
+        roundUpToNearest500(data[data.length - 1]?.fare.OfferedFare),
       );
-      setMinPriceFilter(roundUpToNearest500(data[0]?.Fare?.OfferedFare - 500));
+      setMinPriceFilter(roundUpToNearest500(data[0]?.fare?.OfferedFare));
       setPriceFilter(
-        roundUpToNearest500(data[data.length - 1]?.Fare?.OfferedFare),
+        roundUpToNearest500(data[data.length - 1]?.fare?.OfferedFare),
       );
 
       // Setup airline filters
       let uniqueAirlines = new Set();
       let uniqueAirlinesArr = [];
       for (let i = 0; i < data?.length; i++) {
-        let _airline = data[i].Segments[0][0].Airline;
-        if (!uniqueAirlines.has(_airline.AirlineCode)) {
-          uniqueAirlines.add(_airline.AirlineCode);
+        let _airline = data[i].outBound[0];
+        if (!uniqueAirlines.has(_airline.airlineCode)) {
+          uniqueAirlines.add(_airline.airlineCode);
           uniqueAirlinesArr.push({ airline: _airline, isSelected: true });
         }
       }
@@ -133,29 +152,29 @@ export default function FlightSearchPage() {
     }
   };
 
-  // Setup filters
+  // Setup filters when we get data from api
   useEffect(() => {
     setupFilters();
   }, [data]);
 
-  // Update data on filter change
-
+  // Update data on params change
   useEffect(() => {
     searchFlights();
   }, [searchParams]);
 
+  // one stop | direct flight filter
   useDebounce(
     () => {
       let directFlight = filters.find((f) => f.id === "directflight");
       let oneStop = filters.find((f) => f.id === "oneStopflight");
       if (directFlight?.value) {
         setFilteredData(
-          data?.filter((d) => d.Segments[0][0].StopOver === false), // TODO: Correct it
+          data?.filter((d) => d.inBound.length < 1), // TODO: Correct it
         );
       }
       if (oneStop?.value) {
         setFilteredData(
-          data?.filter((d) => d.Segments[0]?.length <= 2), // TODO: Correct it
+          data?.filter((d) => d.inBound.length < 2), // TODO: Correct it
         );
       }
     },
@@ -163,10 +182,11 @@ export default function FlightSearchPage() {
     [filters],
   );
 
+  // price filter
   useDebounce(
     () => {
       let filtered = data?.filter(
-        (item) => item.Fare.OfferedFare <= priceFilter,
+        (item) => item.fare.OfferedFare <= priceFilter,
       );
       setFilteredData(filtered);
     },
@@ -174,13 +194,14 @@ export default function FlightSearchPage() {
     [priceFilter],
   );
 
+  // airline filter
   useDebounce(
     () => {
       let selectedAirlines = airlineFilters
         .filter((a) => a.isSelected)
-        .map((a) => a.airline.AirlineCode);
-      let filtered = data?.filter((item) =>
-        selectedAirlines.includes(item.Segments[0][0].Airline.AirlineCode),
+        .map((a) => a.airline.airlineCode);
+      let filtered = data?.filter(
+        (item) => selectedAirlines.includes(item.inBound[0].airlineCode), // TODO: Fix it
       );
       setFilteredData(filtered);
     },
@@ -217,18 +238,6 @@ export default function FlightSearchPage() {
         default:
           dateToUse = nightFlight;
       }
-
-      // if (dateToUse) {
-      //   setFilteredData(
-      //     data?.filter((d) => {
-      //       if (
-      //         isTimeBefore(parseISO(d.Segments[0][0].Origin.DepTime), dateToUse)
-      //       ) {
-      //         return d;
-      //       }
-      //     }),
-      //   );
-      // }
     },
     800,
     [flightTimeRange],

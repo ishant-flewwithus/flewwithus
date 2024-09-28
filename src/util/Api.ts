@@ -34,7 +34,7 @@ export class TooManyRequestsError extends HttpError {}
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   // timeout: 5000, // Abort req if no response in specified time
-  //withCredentials: true,
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.response.use(

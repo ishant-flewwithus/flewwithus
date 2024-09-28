@@ -12,11 +12,16 @@ import {
   INDIAN_STATES,
 } from "@/constants/country.constant";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { LuBaggageClaim, LuShoppingBag, LuSiren } from "react-icons/lu";
+import * as FlightApi from "@/network/flights/flight";
+import { useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function FlightBookingPage() {
+  const searchParams = useSearchParams();
+
   const [flightStops, setFlightStops] = useState([
     {
       date: new Date(),
@@ -89,6 +94,28 @@ export default function FlightBookingPage() {
   const [secureTripEnabled, setSecureTripEnabled] = useState<RadiogroupItem>(
     secureOptions[0],
   );
+
+  const [loading, setLoading] = useState(false);
+
+  const getFlightDetails = async () => {
+    try {
+      setLoading(true);
+      const resultIndex = searchParams.get("resultIndex") || "";
+      const results = await FlightApi.getFlightDetails(resultIndex);
+
+      console.log("Flight details:", results);
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "An unexpected error occurred",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getFlightDetails();
+  }, []);
 
   return (
     <Page
@@ -314,7 +341,7 @@ export default function FlightBookingPage() {
           <div className="mt-4 grid grid-cols-12 gap-4">
             {tripFeatures?.map((item, index) => (
               <div
-                className="col-span-12 lg:col-span-4 flex cursor-pointer items-center gap-4 rounded-md bg-onprimary p-4"
+                className="col-span-12 flex cursor-pointer items-center gap-4 rounded-md bg-onprimary p-4 lg:col-span-4"
                 key={index}
               >
                 <div className="rounded-md bg-primary-100 p-2 text-2xl text-primary-700">

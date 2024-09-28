@@ -1,11 +1,34 @@
-export interface TaxBreakup {
-  key: string;
-  value: number;
+export interface SegmentDetails {
+  airlineName: string;
+  airlineCode: string;
+  flightNumber: string;
+  fareClass: string;
+  noOfSeatAvailable: number;
+  originAirportCode: string;
+  originAirportName: string;
+  originTerminal: string;
+  originCityName: string;
+  destinationAirportCode: string;
+  destinationAirportName: string;
+  destinationTerminal: string;
+  destinationCityName: string;
+  departureTime: string;
+  arrivalTime: string;
+  duration: number;
+  stopOver: boolean;
+  stopPoint: string;
+  stopPointArrivalTime: string | null;
+  stopPointDepartureTime: string | null;
+  baggage: string;
+  cabinBaggage: string;
+  cabinClass: number;
 }
-
-export interface ChargeBU {
-  key: string;
-  value: number;
+export interface FlightDetails {
+  resultIndex: string;
+  isLCC: boolean;
+  fare: Fare;
+  outBound: SegmentDetails[];
+  inBound: SegmentDetails[];
 }
 
 export interface Fare {
@@ -35,24 +58,85 @@ export interface Fare {
   TotalSpecialServiceCharges: number;
 }
 
-export interface FareBreakup {
+export interface TaxBreakup {
+  key: string;
+  value: number;
+}
+export interface ChargeBU {
   key: string;
   value: number;
 }
 
-export interface FareBreakdown {
-  Currency: string;
-  PassengerType: number;
-  PassengerCount: number;
-  BaseFare: number;
-  Tax: number;
-  TaxBreakUp: FareBreakup[];
-  YQTax: number;
-  AdditionalTxnFeeOfrd: number;
-  AdditionalTxnFeePub: number;
-  PGCharge: number;
-  SupplierReissueCharges: number;
-}
+// export interface FlightSearchResult {
+//   resultIndex: string;
+//   isLCC: boolean;
+//   outBound: OutBound[];
+//   inBound: any[];
+//   fare: FareDetails;
+// }
+
+// export interface OutBound {
+//   airlineName: string;
+//   airlineCode: string;
+//   flightNumber: string;
+//   fareClass: string;
+//   noOfSeatAvailable: number;
+//   originAirportCode: string;
+//   originAirportName: string;
+//   originTerminal: string;
+//   originCityName: string;
+//   destinationAirportCode: string;
+//   destinationAirportName: string;
+//   destinationTerminal: string;
+//   destinationCityName: string;
+//   departureTime: string;
+//   arrivalTime: string;
+//   duration: number;
+//   stopOver: boolean;
+//   stopPoint: string;
+//   stopPointArrivalTime: string | null;
+//   stopPointDepartureTime: string | null;
+//   baggage: string;
+//   cabinBaggage: string;
+//   cabinClass: number;
+// }
+
+// export interface FareDetails {
+//   Currency: string;
+//   BaseFare: number;
+//   Tax: number;
+//   TaxBreakup: TaxBreakup[];
+//   YQTax: number;
+//   AdditionalTxnFeeOfrd: number;
+//   AdditionalTxnFeePub: number;
+//   PGCharge: number;
+//   OtherCharges: number;
+//   ChargeBU: ChargeBU[];
+//   Discount: number;
+//   PublishedFare: number;
+//   CommissionEarned: number;
+//   PLBEarned: number;
+//   IncentiveEarned: number;
+//   OfferedFare: number;
+//   TdsOnCommission: number;
+//   TdsOnPLB: number;
+//   TdsOnIncentive: number;
+//   ServiceFee: number;
+//   TotalBaggageCharges: number;
+//   TotalMealCharges: number;
+//   TotalSeatCharges: number;
+//   TotalSpecialServiceCharges: number;
+// }
+
+// export interface TaxBreakup {
+//   key: string;
+//   value: number;
+// }
+
+// export interface ChargeBU {
+//   key: string;
+//   value: number;
+// }
 
 export interface Airport {
   AirportCode: string;
@@ -64,15 +148,15 @@ export interface Airport {
   CountryName: string;
 }
 
-export interface Origin {
-  Airport: Airport;
-  DepTime: string;
-}
+// export interface Origin {
+//   Airport: Airport;
+//   DepTime: string;
+// }
 
-export interface Destination {
-  Airport: Airport;
-  ArrTime: string;
-}
+// export interface Destination {
+//   Airport: Airport;
+//   ArrTime: string;
+// }
 
 export interface Airline {
   AirlineCode: string;
@@ -82,102 +166,102 @@ export interface Airline {
   OperatingCarrier: string;
 }
 
-export interface FareClassification {
-  Type: string;
-}
+// export interface FareClassification {
+//   Type: string;
+// }
 
-export interface Segment {
-  Baggage: string;
-  CabinBaggage: string;
-  CabinClass: number;
-  SupplierFareClass: string | null;
-  TripIndicator: number;
-  SegmentIndicator: number;
-  Airline: Airline;
-  NoOfSeatAvailable: number;
-  Origin: Origin;
-  Destination: Destination;
-  AccumulatedDuration: number;
-  Duration: number;
-  GroundTime: number;
-  Mile: number;
-  StopOver: boolean;
-  FlightInfoIndex: string;
-  StopPoint: string;
-  StopPointArrivalTime: string | null;
-  StopPointDepartureTime: string | null;
-  Craft: string;
-  Remark: string | null;
-  IsETicketEligible: boolean;
-  FlightStatus: string;
-  Status: string;
-  FareClassification: FareClassification;
-}
+// export interface Segment {
+//   Baggage: string;
+//   CabinBaggage: string;
+//   CabinClass: number;
+//   SupplierFareClass: string | null;
+//   TripIndicator: number;
+//   SegmentIndicator: number;
+//   Airline: Airline;
+//   NoOfSeatAvailable: number;
+//   Origin: Origin;
+//   Destination: Destination;
+//   AccumulatedDuration: number;
+//   Duration: number;
+//   GroundTime: number;
+//   Mile: number;
+//   StopOver: boolean;
+//   FlightInfoIndex: string;
+//   StopPoint: string;
+//   StopPointArrivalTime: string | null;
+//   StopPointDepartureTime: string | null;
+//   Craft: string;
+//   Remark: string | null;
+//   IsETicketEligible: boolean;
+//   FlightStatus: string;
+//   Status: string;
+//   FareClassification: FareClassification;
+// }
 
-export interface FareRule {
-  Origin: string;
-  Destination: string;
-  Airline: string;
-  FareBasisCode: string;
-  FareRuleDetail: string;
-  FareRestriction: string;
-  FareFamilyCode: string;
-  FareRuleIndex: string;
-}
+// export interface FareRule {
+//   Origin: string;
+//   Destination: string;
+//   Airline: string;
+//   FareBasisCode: string;
+//   FareRuleDetail: string;
+//   FareRestriction: string;
+//   FareFamilyCode: string;
+//   FareRuleIndex: string;
+// }
 
-export interface PenaltyCharges {
-  ReissueCharge: string;
-  CancellationCharge: string;
-}
+// export interface PenaltyCharges {
+//   ReissueCharge: string;
+//   CancellationCharge: string;
+// }
 
-export interface MiniFareRule {
-  JourneyPoints: string;
-  Type: string;
-  From: string | null;
-  To: string | null;
-  Unit: string | null;
-  Details: string;
-}
+// export interface MiniFareRule {
+//   JourneyPoints: string;
+//   Type: string;
+//   From: string | null;
+//   To: string | null;
+//   Unit: string | null;
+//   Details: string;
+// }
 
-export interface FareClassificationDetails {
-  Color: string;
-  Type: string;
-}
+// export interface FareClassificationDetails {
+//   Color: string;
+//   Type: string;
+// }
 
-export interface FlightSearchResult {
-  FirstNameFormat: string | null;
-  IsBookableIfSeatNotAvailable: boolean;
-  IsHoldAllowedWithSSR: boolean;
-  IsUpsellAllowed: boolean;
-  LastNameFormat: string | null;
-  ResultIndex: string;
-  Source: number;
-  IsLCC: boolean;
-  IsRefundable: boolean;
-  IsPanRequiredAtBook: boolean;
-  IsPanRequiredAtTicket: boolean;
-  IsPassportRequiredAtBook: boolean;
-  IsPassportRequiredAtTicket: boolean;
-  GSTAllowed: boolean;
-  IsCouponAppilcable: boolean;
-  IsGSTMandatory: boolean;
-  AirlineRemark: string;
-  IsPassportFullDetailRequiredAtBook: boolean;
-  ResultFareType: string;
-  Fare: Fare;
-  FareBreakdown: FareBreakdown[];
-  Segments: Segment[][];
-  LastTicketDate: string;
-  TicketAdvisory: string;
-  FareRules: FareRule[];
-  PenaltyCharges: PenaltyCharges;
-  AirlineCode: string;
-  MiniFareRules: MiniFareRule[][];
-  ValidatingAirline: string;
-  FareClassification: FareClassificationDetails;
-}
+// export interface FlightSearchResult {
+//   FirstNameFormat: string | null;
+//   IsBookableIfSeatNotAvailable: boolean;
+//   IsHoldAllowedWithSSR: boolean;
+//   IsUpsellAllowed: boolean;
+//   LastNameFormat: string | null;
+//   ResultIndex: string;
+//   Source: number;
+//   IsLCC: boolean;
+//   IsRefundable: boolean;
+//   IsPanRequiredAtBook: boolean;
+//   IsPanRequiredAtTicket: boolean;
+//   IsPassportRequiredAtBook: boolean;
+//   IsPassportRequiredAtTicket: boolean;
+//   GSTAllowed: boolean;
+//   IsCouponAppilcable: boolean;
+//   IsGSTMandatory: boolean;
+//   AirlineRemark: string;
+//   IsPassportFullDetailRequiredAtBook: boolean;
+//   ResultFareType: string;
+//   Fare: Fare;
+//   FareBreakdown: FareBreakdown[];
+//   Segments: Segment[][];
+//   LastTicketDate: string;
+//   TicketAdvisory: string;
+//   FareRules: FareRule[];
+//   PenaltyCharges: PenaltyCharges;
+//   AirlineCode: string;
+//   MiniFareRules: MiniFareRule[][];
+//   ValidatingAirline: string;
+//   FareClassification: FareClassificationDetails;
+// }
 
-// For airport search, not related to TBO
+// // For airport search, not related to TBO
 export interface AirportDBItem {
   AIRPORTCODE: string;
   AIRPORTNAME: string;
@@ -188,27 +272,16 @@ export interface AirportDBItem {
   COUNTRYNAME: string;
 }
 
-export interface FlightFilter {
-  id: string;
-  title: string;
-  value: boolean;
-}
-
-export interface AirlineFilter {
-  airline: Airline;
-  isSelected: boolean;
-}
-
-export interface FlightSearchParams {
-  AdultCount: string;
-  ChildCount: string;
-  InfantCount: string;
-  JourneyType: string;
-  Origin: string;
-  Destination: string;
-  DepartureDate: string;
-  ArrivalDate?: string;
-  FromCity: string;
-  ToCity: string;
-  FlightCabinClass: string;
-}
+// export interface FlightSearchParams {
+//   AdultCount: string;
+//   ChildCount: string;
+//   InfantCount: string;
+//   JourneyType: string;
+//   Origin: string;
+//   Destination: string;
+//   DepartureDate: string;
+//   ArrivalDate?: string;
+//   FromCity: string;
+//   ToCity: string;
+//   FlightCabinClass: string;
+// }
